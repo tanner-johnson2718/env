@@ -113,6 +113,8 @@ export DEPLOY_PI="192.168.0.17"
 # Important dirs
 export NFS_ROOT=$HOME/nfs_root
 export REPOS=$NFS_ROOT/repos
+export ESP_IDF_INSTALL=$HOME/esp-idf
+
 
 # Alias
 alias ll='ls -al'
@@ -121,7 +123,7 @@ alias l='ls -CF'
 alias git_dummy_push="git add ./\* && git commit -m \"..\" && git push"
 alias user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || return"
 alias tmux_source="tmux source ${HOME}/.tmux.conf"
-alias get_idf='. $HOME/esp/esp-idf/export.sh'
+alias get_idf='. $ESP_IDF_INSTALL/export.sh'
 
 ###############################################################################
 # Dev Env Stuff
@@ -227,8 +229,10 @@ snapshot() {
     cd -r ~/.gitconfig ~/temp
     cp -r ~/snap/firefox ~/temp
     cp -r $REPOS ~/temp
-    cp -r ~/.tmux.conf
-    
+    cp -r ~/.tmux.conf ~/temp
+	cp -r ~/.vimrc ~/temp
+	cp -r ~/.vim ~/temp
+
     tar -cvzf ~/$(date +%B_%d_%Y).tar.gz ~/temp
     rm -rf temp
     gpg -v -c  ~/$(date +%B_%d_%Y).tar.gz
@@ -262,6 +266,7 @@ cloneall() {
     git clone https://github.com/tanner-johnson2718/Crypto
     git clone https://github.com/tanner-johnson2718/A-Car
     git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
+	git clone https://github.com/tanner-johnson2718/env
 }
 
 pushall() {
@@ -275,6 +280,18 @@ pushall() {
 
 init_git_credentials_store() {
     git config --global credential.helper store
+}
+
+git_backup_env() {
+	cp -i .bash_git $REPOS/env
+	cp -i .bashrc $REPOS/env
+	cp -i .tmux.conf $REPOS/env
+	cp -i .vimrc $REPOS/env
+	cp -ir .vim $REPOS/env
+
+	cd $REPOS/env
+	git_dummy_push
+	cd ~
 }
 
 ###############################################################################

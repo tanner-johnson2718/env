@@ -1,0 +1,12 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhistcnt =8
+let g:netrw_dirhist_8='/home/hipi/nfs_root/repos/env/.vim/syntax'
+let g:netrw_dirhist_7='/home/hipi/nfs_root/repos/env/.vim'
+let g:netrw_dirhist_6='/home/hipi/nfs_root/repos/ESP32_Enclosure_CTLR/main'
+let g:netrw_dirhist_5='/home/hipi/nfs_root/repos/ESP32_Enclosure_CTLR'
+let g:netrw_dirhist_4='/home/hipi/nfs_root/repos/MEME_ETH_LAB/extern_packages/ethraw/src'
+let g:netrw_dirhist_3='/home/hipi/nfs_root/repos/MEME_ETH_LAB/extern_packages/ethraw'
+let g:netrw_dirhist_2='/home/hipi/nfs_root/repos/MEME_ETH_LAB/extern_packages'
+let g:netrw_dirhist_1='/home/hipi/nfs_root/repos/MEME_ETH_LAB'
+let g:netrw_dirhist_0='/home/hipi/nfs_root/repos/MEME_ETH_LAB/P1.2'
+let g:netrw_dirhist_9='/home/hipi/nfs_root/repos/MEME_ETH_LAB'
