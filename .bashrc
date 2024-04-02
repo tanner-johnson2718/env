@@ -132,7 +132,7 @@ install_devenv_tools() {
     sudo apt-get install htop
     sudo apt-get install jq
     sudo apt-get install tshark
-    sudo apt-get install vim
+    sudo apt-get install vim-gtk3
     sudo apt-get install gdb
 }
 
