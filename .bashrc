@@ -103,7 +103,7 @@ if ! shopt -oq posix; then
 fi
 
 ###############################################################################
-# Global Variables
+# Global ENV Variables
 ###############################################################################
 
 # Local Network IP's
@@ -114,7 +114,7 @@ export DEPLOY_PI="192.168.0.17"
 export NFS_ROOT=$HOME/nfs_root
 export REPOS=$NFS_ROOT/repos
 export ESP_IDF_INSTALL=$HOME/esp-idf
-
+export ENV_REPO_PATH=$REPOS/env
 
 # Alias
 alias ll='ls -al'
@@ -126,16 +126,74 @@ alias tmux_source="tmux source ${HOME}/.tmux.conf"
 alias get_idf='. $ESP_IDF_INSTALL/export.sh'
 
 ###############################################################################
-# Dev Env Stuff
+# Script to set up my env. Will clone 
 ###############################################################################
 
-install_devenv_tools() {
-    sudo apt-get install tmux
-    sudo apt-get install htop
-    sudo apt-get install jq
-    sudo apt-get install tshark
-    sudo apt-get install vim-gtk3
-    sudo apt-get install gdb
+cloneall() {
+    if [ -d $REPOS ]; then
+        echo "${REPOS} dir already exists, deleting and recloning"
+        user_confirm    # return on no
+    fi 
+
+    mkdir $REPOS
+    cd $REPOS
+    git clone https://github.com/tanner-johnson2718/ESP32_Deluminator.git
+    git clone https://github.com/tanner-johnson2718/MEME_ETH_LAB.git
+    git clone https://github.com/tanner-johnson2718/MEME_OS_3.git
+    git clone https://github.com/tanner-johnson2718/PI_JTAG_DBGR
+    git clone https://github.com/tanner-johnson2718/MEME_OS_Project
+    git clone https://github.com/tanner-johnson2718/Ricks_Designs
+    git clone https://github.com/tanner-johnson2718/GPS
+    git clone https://github.com/tanner-johnson2718/MEME_OS
+    git clone https://github.com/tanner-johnson2718/Klipper_C137
+    git clone https://github.com/tanner-johnson2718/MEME_OS_2
+    git clone https://github.com/tanner-johnson2718/Calc_N_Phys
+    git clone https://github.com/tanner-johnson2718/Crypto
+    git clone https://github.com/tanner-johnson2718/A-Car
+    git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
+	git clone https://github.com/tanner-johnson2718/env
+}
+
+install_env() {
+	read -p "Install APT Packages? (y/n)" answer
+	if [[ "${answer}" == "y" ]]; then
+		sudo apt-get install firefox
+		sudo apt-get install tmux
+		sudo apt-get install htop
+		sudo apt-get install jq
+		sudo apt-get install tshark
+		sudo apt-get install vim-gtk3
+		sudo apt-get install gdb
+		sudo apt-get install clang
+		sudo apt-get install clangd
+		sudo apt-get install golang-go
+		sudo apt-get install npm
+		sudo apt-get install default-jdk
+	fi
+
+	read -p "Clone repos? (y/n)" answer
+	if [[ "${answer}" == "n" ]]; then 
+		echo "Skipping... please ensure ${ENV_REPO_PATH} exists"
+		sleep 1
+	else
+		echo "Cloning all to ${REPOS}"
+		cloneall
+		cd ~
+	fi
+
+	cp -r -i $ENV_REPO_PATH/.bashrc $HOME
+	cp -r -i $ENV_REPO_PATH/.bash_git $HOME
+	cp -r -i $ENV_REPO_PATH/.tmux.conf $HOME
+	cp -r -i $ENV_REPO_PATH/.vim $HOME
+	cp -r -i $ENV_REPO_PATH/.vimrc $HOME
+
+	read -p "Install YCM? (y/n)" answer
+	if [[ "${answer}" == "y" ]]; then
+		git clone --recurse-submodules https://github.com/ycm-core/YouCompleteMe.git ~/.vim/pack/YouCompleteMe/opt/YouCompleteMe
+		pushd ~/.vim/pack/YouCompleteMe/opt/YouCompleteMe
+		./install.py --all
+		popd
+	fi
 }
 
 copy_me_game() {
@@ -169,6 +227,27 @@ copy_me_game() {
         sleep 1
         s=$(( $s + 1 ))
     done
+}
+
+pushall() {
+    for d in $REPOS/* ; do
+        echo $d
+        cd $d 
+        git push
+    done
+
+}
+
+git_backup_env() {
+	cp -i .bash_git $REPOS/env
+	cp -i .bashrc $REPOS/env
+	cp -i .tmux.conf $REPOS/env
+	cp -i .vimrc $REPOS/env
+	cp -ir .vim/syntax/c.vim $REPOS/env/.vim/syntax/c.vim
+
+	cd $REPOS/env
+	git_dummy_push
+	cd ~
 }
 
 ###############################################################################
@@ -243,56 +322,6 @@ snapshot() {
 ###############################################################################
 # Repo Management
 ###############################################################################
-
-cloneall() {
-    if [ -d $REPOS ]; then
-        echo "${REPOS} dir already exists, deleting and recloning"
-        user_confirm    # return on no
-    fi 
-
-    mkdir $REPOS
-    cd $REPOS
-    git clone https://github.com/tanner-johnson2718/ESP32_Deluminator.git
-    git clone https://github.com/tanner-johnson2718/MEME_ETH_LAB.git
-    git clone https://github.com/tanner-johnson2718/MEME_OS_3.git
-    git clone https://github.com/tanner-johnson2718/PI_JTAG_DBGR
-    git clone https://github.com/tanner-johnson2718/MEME_OS_Project
-    git clone https://github.com/tanner-johnson2718/Ricks_Designs
-    git clone https://github.com/tanner-johnson2718/GPS
-    git clone https://github.com/tanner-johnson2718/MEME_OS
-    git clone https://github.com/tanner-johnson2718/Klipper_C137
-    git clone https://github.com/tanner-johnson2718/MEME_OS_2
-    git clone https://github.com/tanner-johnson2718/Calc_N_Phys
-    git clone https://github.com/tanner-johnson2718/Crypto
-    git clone https://github.com/tanner-johnson2718/A-Car
-    git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
-	git clone https://github.com/tanner-johnson2718/env
-}
-
-pushall() {
-    for d in $REPOS/* ; do
-        echo $d
-        cd $d 
-        git push
-    done
-
-}
-
-init_git_credentials_store() {
-    git config --global credential.helper store
-}
-
-git_backup_env() {
-	cp -i .bash_git $REPOS/env
-	cp -i .bashrc $REPOS/env
-	cp -i .tmux.conf $REPOS/env
-	cp -i .vimrc $REPOS/env
-	cp -ir .vim $REPOS/env
-
-	cd $REPOS/env
-	git_dummy_push
-	cd ~
-}
 
 ###############################################################################
 # NFS Management

@@ -5,6 +5,7 @@ set autoindent
 set smartindent
 set hlsearch
 set incsearch
+set hidden
 hi myFuncGroup ctermfg=192
 hi Include ctermfg=170
 hi PreProc ctermfg=170
@@ -14,10 +15,8 @@ hi Statement ctermfg=170
 hi myMacroGroup ctermfg=68
 hi Constant ctermfg=46
 hi Comment ctermfg=113
+hi Pmenu ctermbg=241 ctermfg=251
 
-" Undo
-nmap <c-z> <c-o>:u<CR>
- 
 " Save
 nmap <c-s> :w<CR>
 
@@ -31,7 +30,7 @@ map <ESC>[5;5~ <C-PageUp>
 
 " Normal mode map word and paragraph jumps
 nmap <C-Left> b
-nmap <C-Right> w
+nmap <C-Right> e
 map <C-Up> {
 map <C-Down> }
 
@@ -44,7 +43,29 @@ nmap <C-x> :bd<CR>
 nmap <CR> i
 
 " Copy to system clipboard w/ enter
-vmap <CR> "+y
+vmap c "+y
+vmap x "+d
+
+" Backspace should delete in visual mode
+vmap <BS> d
 
 " Clear Search Highlighting
 nmap <C-c> :noh<CR>
+
+" Copy and Paste doesnt create a bunch of random indents
+let &t_SI .= "\<Esc>[?2004h"
+let &t_EI .= "\<Esc>[?2004l"
+
+inoremap <special> <expr> <Esc>[200~ XTermPasteBegin()
+
+function! XTermPasteBegin()
+	set pastetoggle=<Esc>[201~
+	set paste
+	return ""
+endfunction
+
+
+" YCM Plug in
+packadd YouCompleteMe
+nmap <C-l> :YcmCompleter GoToDeclaration<CR>
+nmap <C-f> <S-*>
