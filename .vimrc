@@ -68,6 +68,3 @@ endfunction
 packadd YouCompleteMe
 nmap <C-l> :YcmCompleter GoToDeclaration<CR>
 nmap <C-f> <S-*>
-
-
-
