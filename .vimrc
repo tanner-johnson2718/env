@@ -1,6 +1,6 @@
 set ts=4 sw=4
 colorscheme slate
-set relativenumber
+set nu rnu
 set autoindent
 set smartindent
 set hlsearch
@@ -33,6 +33,8 @@ nmap <C-Left> b
 nmap <C-Right> e
 map <C-Up> {
 map <C-Down> }
+map <C-e> $
+map <C-b> 0
 
 " Quick Buffer Switches and Closing
 nmap <C-PageDown> :bprev<CR>
@@ -40,14 +42,11 @@ nmap <C-PageUp> :bnext<CR>
 nmap <C-x> :bd<CR>
 
 " In normal mode make enter go into insert mode
-nmap <CR> i
+nmap <CR> i<right>
 
 " Copy to system clipboard w/ enter
 vmap c "+y
 vmap x "+d
-
-" Backspace should delete in visual mode
-vmap <BS> d
 
 " Clear Search Highlighting
 nmap <C-c> :noh<CR>
@@ -69,3 +68,6 @@ endfunction
 packadd YouCompleteMe
 nmap <C-l> :YcmCompleter GoToDeclaration<CR>
 nmap <C-f> <S-*>
+
+
+
