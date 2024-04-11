@@ -169,6 +169,7 @@ install_env() {
 		sudo apt-get install golang-go
 		sudo apt-get install npm
 		sudo apt-get install default-jdk
+		sudo apt-get install git
 	fi
 
 	read -p "Clone repos? (y/n)" answer
@@ -305,7 +306,7 @@ snapshot() {
     cp -r ~/.bashrc ~/temp
     cp -r ~/.bash_git ~/temp
     cp -r ~/.git-credentials ~/temp
-    cd -r ~/.gitconfig ~/temp
+    cp -r ~/.gitconfig ~/temp
     cp -r ~/snap/firefox ~/temp
     cp -r $REPOS ~/temp
     cp -r ~/.tmux.conf ~/temp
