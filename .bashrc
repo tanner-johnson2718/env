@@ -109,12 +109,17 @@ fi
 # Local Network IP's
 export HOME_PI="192.168.0.14"
 export DEPLOY_PI="192.168.0.17"
+export MINI="192.168.0.4"
 
 # Important dirs
 export NFS_ROOT=$HOME/nfs_root
 export REPOS=$NFS_ROOT/repos
 export ESP_IDF_INSTALL=$HOME/esp-idf
 export ENV_REPO_PATH=$REPOS/env
+
+# Import binaries
+export SLCR="$HOME/PrusaSlicer_2.7.1/prusa-slicer"
+export CAD="$HOME/Ondsel_1.0.35694"
 
 # Alias
 alias ll='ls -al'
@@ -124,6 +129,7 @@ alias git_dummy_push="git add ./\* && git commit -m \"..\" && git push"
 alias user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || return"
 alias tmux_source="tmux source ${HOME}/.tmux.conf"
 alias get_idf='. $ESP_IDF_INSTALL/export.sh'
+alias cam=cheese
 
 ###############################################################################
 # Script to set up my env. Will clone 
@@ -234,7 +240,7 @@ pushall() {
     for d in $REPOS/* ; do
         echo $d
         cd $d 
-        git push
+        git_dummy_push
     done
 
 }
@@ -321,10 +327,6 @@ snapshot() {
 }
 
 ###############################################################################
-# Repo Management
-###############################################################################
-
-###############################################################################
 # NFS Management
 ###############################################################################
 
@@ -344,8 +346,3 @@ setup_nfs() {
     sudo exportfs -a #making the file share available
     sudo systemctl restart nfs-kernel-server #restarting the NFS kernel
 }
-
-###############################################################################
-# ESP IDF Mangement
-###############################################################################
-
