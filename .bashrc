@@ -107,8 +107,8 @@ fi
 ###############################################################################
 
 # Local Network IP's
-export HOME_PI="192.168.0.14"
-export DEPLOY_PI="192.168.0.17"
+export HOME_PI="192.168.0.18"
+export ENC_PI="192.168.0.6"
 export MINI="192.168.0.4"
 export LAPTOP="192.168.0.5"
 
@@ -118,7 +118,6 @@ export REPOS=$HOME/repos
 export ENV_REPO_PATH=$REPOS/env
 
 # Import binaries
-export SLCR="$HOME/PrusaSlicer_2.7.1/prusa-slicer"
 export CAD="$HOME/Ondsel_1.0.35694"
 
 # Alias
@@ -197,7 +196,8 @@ install_env() {
 		sudo apt-get install vim-gtk3
 		sudo apt-get install gdb
 		sudo apt-get install git
-	fi
+        sudo apt-get install fuse
+    fi
 
 	read -p "Clone repos? (y/n)" answer
 	if [[ "${answer}" == "n" ]]; then 
