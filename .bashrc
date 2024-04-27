@@ -168,6 +168,8 @@ git_restore_env() {
     cp -i $ENV_REPO_PATH/.bash_git $HOME
     cp -i $ENV_REPO_PATH/.bashrc $HOME
     cp -i $ENV_REPO_PATH/.tmux.conf $HOME
+
+    source $HOME/.bashrc
 }
 
 cloneall() {
@@ -207,6 +209,7 @@ install_env() {
 		sudo apt-get install gdb
 		sudo apt-get install git
         sudo apt-get install fuse
+        sudo apt-get install xclip
     fi
 
 	read -p "Clone repos? (y/n)" answer
@@ -310,4 +313,16 @@ setup_nfs() {
 
     sudo exportfs -a #making the file share available
     sudo systemctl restart nfs-kernel-server #restarting the NFS kernel
+}
+
+mount_nfs() {
+    sudo apt-get update
+    sudo apt-get install nfs-common
+
+    sudo mkdir $NFS_ROOT
+    sudo chmod 777 $NFS_ROOT
+    
+    sudo mount -t nfs "${HOME_PI}:/home/home/nfs_root" $NFS_ROOT
+
+    sudo echo "${HOME_PI}:/home/home/nfs_root    ${NFS_ROOT}    nfs    defaults    0 0" >> /etc/fstab
 }
