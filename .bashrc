@@ -160,6 +160,12 @@ git_backup_env() {
 	cd ~
 }
 
+git_restore_env() {
+    cp -i $ENV_REPO_PATH/.bash_git $HOME
+    cp -i $ENV_REPO_PATH/.bashrc $HOME
+    cp -i $ENV_REPO_PATH/.tmux.conf $HOME
+}
+
 cloneall() {
     if [ -d $REPOS ]; then
         echo "${REPOS} dir already exists, deleting and recloning"
