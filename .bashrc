@@ -140,6 +140,8 @@ pushall() {
         cd $d 
         git_dummy_push
     done
+
+    cd ~
 }
 
 pullall() {
@@ -148,6 +150,8 @@ pullall() {
         cd $d 
         git pull
     done
+
+    cd ~
 }
 
 git_backup_env() {
