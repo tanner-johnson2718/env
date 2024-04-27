@@ -110,11 +110,11 @@ fi
 export HOME_PI="192.168.0.14"
 export DEPLOY_PI="192.168.0.17"
 export MINI="192.168.0.4"
+export LAPTOP="192.168.0.5"
 
 # Important dirs
 export NFS_ROOT=$HOME/nfs_root
-export REPOS=$NFS_ROOT/repos
-export ESP_IDF_INSTALL=$HOME/esp-idf
+export REPOS=$HOME/repos
 export ENV_REPO_PATH=$REPOS/env
 
 # Import binaries
@@ -134,6 +134,32 @@ alias cam=cheese
 ###############################################################################
 # Script to set up my env. Will clone 
 ###############################################################################
+
+pushall() {
+    for d in $REPOS/* ; do
+        echo $d
+        cd $d 
+        git_dummy_push
+    done
+}
+
+pullall() {
+    for d in $REPOS/* ; do
+        echo $d
+        cd $d 
+        git pull
+    done
+}
+
+git_backup_env() {
+	cp -i .bash_git $REPOS/env
+	cp -i .bashrc $REPOS/env
+	cp -i .tmux.conf $REPOS/env
+
+	cd $REPOS/env
+	git_dummy_push
+	cd ~
+}
 
 cloneall() {
     if [ -d $REPOS ]; then
@@ -170,11 +196,6 @@ install_env() {
 		sudo apt-get install tshark
 		sudo apt-get install vim-gtk3
 		sudo apt-get install gdb
-		sudo apt-get install clang
-		sudo apt-get install clangd
-		sudo apt-get install golang-go
-		sudo apt-get install npm
-		sudo apt-get install default-jdk
 		sudo apt-get install git
 	fi
 
@@ -191,70 +212,6 @@ install_env() {
 	cp -r -i $ENV_REPO_PATH/.bashrc $HOME
 	cp -r -i $ENV_REPO_PATH/.bash_git $HOME
 	cp -r -i $ENV_REPO_PATH/.tmux.conf $HOME
-	cp -r -i $ENV_REPO_PATH/.vim $HOME
-	cp -r -i $ENV_REPO_PATH/.vimrc $HOME
-
-	read -p "Install YCM? (y/n)" answer
-	if [[ "${answer}" == "y" ]]; then
-		git clone --recurse-submodules https://github.com/ycm-core/YouCompleteMe.git ~/.vim/pack/YouCompleteMe/opt/YouCompleteMe
-		pushd ~/.vim/pack/YouCompleteMe/opt/YouCompleteMe
-		./install.py --all
-		popd
-	fi
-}
-
-copy_me_game() {
-    if [ $# -ne 1 ]; then
-        echo "Pass n silly"
-        return
-    fi
-
-    n=$1
-    r=$(($RANDOM % $n))
-    for i in $(seq 1 $n);
-    do
-        if [ $r -eq $i ]; then
-            echo "COPY --->"
-            echo "IP1 | 192.168.69.67"
-            echo "IP2 | 192.168.69.68"
-            echo "IP3 | 192.168.69.69"
-            echo "<---"
-        else
-            echo "cdcdcsdcdsvdfvbdfvfdvdfv"
-            echo "cdscds dcdcdsccdcdsccd csdc"
-            echo "nnnn  mmmm nnn mm ,, oo jkk"
-        fi
-        echo ""
-    done
-
-    s=0
-    while true;
-    do
-        echo -ne "Time: ${s}\r"
-        sleep 1
-        s=$(( $s + 1 ))
-    done
-}
-
-pushall() {
-    for d in $REPOS/* ; do
-        echo $d
-        cd $d 
-        git_dummy_push
-    done
-
-}
-
-git_backup_env() {
-	cp -i .bash_git $REPOS/env
-	cp -i .bashrc $REPOS/env
-	cp -i .tmux.conf $REPOS/env
-	cp -i .vimrc $REPOS/env
-	cp -ir .vim/syntax/c.vim $REPOS/env/.vim/syntax/c.vim
-
-	cd $REPOS/env
-	git_dummy_push
-	cd ~
 }
 
 ###############################################################################
@@ -316,8 +273,6 @@ snapshot() {
     cp -r ~/snap/firefox ~/temp
     cp -r $REPOS ~/temp
     cp -r ~/.tmux.conf ~/temp
-	cp -r ~/.vimrc ~/temp
-	cp -r ~/.vim ~/temp
 
     tar -cvzf ~/$(date +%B_%d_%Y).tar.gz ~/temp
     rm -rf temp
