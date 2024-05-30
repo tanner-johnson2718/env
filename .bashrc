@@ -111,6 +111,7 @@ export HOME_PI="192.168.0.18"
 export ENC_PI="192.168.0.6"
 export MINI="192.168.0.4"
 export LAPTOP="192.168.0.5"
+export LOL_PI="192.168.0.17"
 
 # Important dirs
 export NFS_ROOT=$HOME/nfs_root
