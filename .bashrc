@@ -67,15 +67,6 @@ PROMPT_DIRTRIM=1
 
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -117,9 +108,7 @@ export LOL_PI="192.168.0.17"
 export NFS_ROOT=$HOME/nfs_root
 export REPOS=$HOME/repos
 export ENV_REPO_PATH=$REPOS/env
-
-# Import binaries
-export CAD="$HOME/Ondsel_1.0.35694"
+export NIXOS_CONF=/etc/nixos/configuration.nix
 
 # Alias
 alias ll='ls -al'
@@ -129,7 +118,7 @@ alias git_dummy_push="git add ./\* && git commit -m \"..\" && git push"
 alias user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || return"
 alias tmux_source="tmux source ${HOME}/.tmux.conf"
 alias get_idf='. $ESP_IDF_INSTALL/export.sh'
-alias cam=cheese
+alias nix_update="sudo nixos-rebuild switch"
 
 ###############################################################################
 # Script to set up my env. Will clone 
@@ -156,9 +145,10 @@ pullall() {
 }
 
 git_backup_env() {
-	cp -i .bash_git $REPOS/env
-	cp -i .bashrc $REPOS/env
-	cp -i .tmux.conf $REPOS/env
+	cp -i .bash_git $ENV_REPO_PATH
+	cp -i .bashrc $ENV_REPO_PATH
+	cp -i .tmux.conf $ENV_REPO_PATH
+    cp -i $NIXOS_CONF $ENV_REPO_PATH
 
 	cd $REPOS/env
 	git_dummy_push
@@ -169,6 +159,7 @@ git_restore_env() {
     cp -i $ENV_REPO_PATH/.bash_git $HOME
     cp -i $ENV_REPO_PATH/.bashrc $HOME
     cp -i $ENV_REPO_PATH/.tmux.conf $HOME
+    cp -i $ENV_REPO_PATH/configuration.nix $NIXOS_CONF
 
     source $HOME/.bashrc
 }
@@ -196,36 +187,6 @@ cloneall() {
     git clone https://github.com/tanner-johnson2718/A-Car
     git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
 	git clone https://github.com/tanner-johnson2718/env
-}
-
-install_env() {
-	read -p "Install APT Packages? (y/n)" answer
-	if [[ "${answer}" == "y" ]]; then
-		sudo apt-get install firefox
-		sudo apt-get install tmux
-		sudo apt-get install htop
-		sudo apt-get install jq
-		sudo apt-get install tshark
-		sudo apt-get install vim-gtk3
-		sudo apt-get install gdb
-		sudo apt-get install git
-        sudo apt-get install fuse
-        sudo apt-get install xclip
-    fi
-
-	read -p "Clone repos? (y/n)" answer
-	if [[ "${answer}" == "n" ]]; then 
-		echo "Skipping... please ensure ${ENV_REPO_PATH} exists"
-		sleep 1
-	else
-		echo "Cloning all to ${REPOS}"
-		cloneall
-		cd ~
-	fi
-
-	cp -r -i $ENV_REPO_PATH/.bashrc $HOME
-	cp -r -i $ENV_REPO_PATH/.bash_git $HOME
-	cp -r -i $ENV_REPO_PATH/.tmux.conf $HOME
 }
 
 ###############################################################################
