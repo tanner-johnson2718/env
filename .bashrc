@@ -109,6 +109,7 @@ export NFS_ROOT=$HOME/nfs_root
 export REPOS=$HOME/repos
 export ENV_REPO_PATH=$REPOS/env
 export NIXOS_CONF=/etc/nixos/configuration.nix
+export FIREFOX_DIR=$HOME/.mozilla/firefox/7j03e1wj.default
 
 # Alias
 alias ll='ls -al'
@@ -245,9 +246,12 @@ snapshot() {
     cp -r ~/.bash_git ~/temp
     cp -r ~/.git-credentials ~/temp
     cp -r ~/.gitconfig ~/temp
-    cp -r ~/snap/firefox ~/temp
+    cp -r $FIREFOX_DIR/key4.db ~/temp
+    cp -r $FIREFOX_DIR/logins.json ~/temp
+    cp -r $FIREFOX_DIR/places.sqlite ~/temp
     cp -r $REPOS ~/temp
     cp -r ~/.tmux.conf ~/temp
+    cp -r $NIXOS_CONF ~/temp
 
     tar -cvzf ~/$(date +%B_%d_%Y).tar.gz ~/temp
     rm -rf temp
