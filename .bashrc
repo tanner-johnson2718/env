@@ -120,6 +120,7 @@ alias user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY
 alias tmux_source="tmux source ${HOME}/.tmux.conf"
 alias get_idf='. $ESP_IDF_INSTALL/export.sh'
 alias nix_update="sudo nixos-rebuild switch"
+alias ng_start="sudo airmon-ng start wlp5s0"
 
 ###############################################################################
 # Script to set up my env. Will clone 
@@ -188,7 +189,6 @@ cloneall() {
     git clone https://github.com/tanner-johnson2718/A-Car
     git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
 	git clone https://github.com/tanner-johnson2718/env
-    git clone https://github.com/tanner-johnson2718/C_Ref
 }
 
 ###############################################################################

@@ -107,6 +107,12 @@
     wireshark-cli
     git
     xclip
+    gcc
+    gnumake
+    btop
+    rpi-imager
+    aircrack-ng
+    tcpdump
   ];
 
   services.pcscd.enable = true;
