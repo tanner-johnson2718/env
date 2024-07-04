@@ -121,6 +121,7 @@ alias tmux_source="tmux source ${HOME}/.tmux.conf"
 alias get_idf='. $ESP_IDF_INSTALL/export.sh'
 alias nix_update="sudo nixos-rebuild switch"
 alias ng_start="sudo airmon-ng start wlp5s0"
+alias ng_stop="sudo airmon-ng stop wlp5s0mon"
 
 ###############################################################################
 # Script to set up my env. Will clone 
