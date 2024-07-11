@@ -190,6 +190,7 @@ cloneall() {
     git clone https://github.com/tanner-johnson2718/A-Car
     git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
 	git clone https://github.com/tanner-johnson2718/env
+    git clone https://github.com/tanner-johnson2718/C_Ref
 }
 
 ###############################################################################
