@@ -170,23 +170,25 @@ closure() {
 ###############################################################################
 
 pushall() {
+    pushd ~/
     for d in $REPOS/* ; do
         echo $d
         cd $d 
         git_dummy_push
     done
 
-    cd ~
+    popd
 }
 
 pullall() {
+    pushd ~/
     for d in $REPOS/* ; do
         echo $d
         cd $d 
         git pull
     done
 
-    cd ~
+    popd
 }
 
 git_backup_env() {
@@ -216,7 +218,7 @@ cloneall() {
     fi 
 
     mkdir $REPOS
-    cd $REPOS
+    pushd $REPOS
     git clone https://github.com/tanner-johnson2718/ESP32_Deluminator.git
     git clone https://github.com/tanner-johnson2718/MEME_ETH_LAB.git
     git clone https://github.com/tanner-johnson2718/MEME_OS_3.git
@@ -233,6 +235,7 @@ cloneall() {
     git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
 	git clone https://github.com/tanner-johnson2718/env
     git clone https://github.com/tanner-johnson2718/C_Ref
+    popd
 }
 
 ###############################################################################
