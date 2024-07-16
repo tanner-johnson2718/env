@@ -127,6 +127,7 @@ alias bash_source="source ~/.bashrc "
 ###############################################################################
 export STORE=/nix/store
 export NIXOS_CONF=/etc/nixos/configuration.nix
+export NIXOS_HW_CONF=/etc/nixos/hardware-configuration.nix
 
 alias nix_update="sudo nixos-rebuild switch"
 
