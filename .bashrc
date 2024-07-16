@@ -104,11 +104,10 @@ export MINI="192.168.0.4"
 export LAPTOP="192.168.0.5"
 export LOL_PI="192.168.0.17"
 
-# Important dirs
+# Generic Important dirs
 export NFS_ROOT=$HOME/nfs_root
 export REPOS=$HOME/repos
 export ENV_REPO_PATH=$REPOS/env
-export NIXOS_CONF=/etc/nixos/configuration.nix
 export FIREFOX_DIR=$HOME/.mozilla/firefox/7j03e1wj.default
 
 # Alias
@@ -119,12 +118,55 @@ alias git_dummy_push="git add ./\* && git commit -m \"..\" && git push"
 alias user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || return"
 alias tmux_source="tmux source ${HOME}/.tmux.conf"
 alias get_idf='. $ESP_IDF_INSTALL/export.sh'
-alias nix_update="sudo nixos-rebuild switch"
 alias ng_start="sudo airmon-ng start wlp5s0"
 alias ng_stop="sudo airmon-ng stop wlp5s0mon"
+alias bash_source="source ~/.bashrc "
 
 ###############################################################################
-# Script to set up my env. Will clone 
+# NIX OS helpers
+###############################################################################
+export STORE=/nix/store
+export NIXOS_CONF=/etc/nixos/configuration.nix
+
+alias nix_update="sudo nixos-rebuild switch"
+
+# Take in a package name and search the store for all paths.
+# Ask the user which store entity they'd like to find the closure of
+# Print the closure of that enity
+closure() {
+    if [[ $# != 1 ]]; then
+        echo "closure <pname>"
+        return
+    fi
+
+    paths=$(ls ${STORE} | grep $1)
+    paths=$(echo $paths | tr " " "\n")
+    i=0
+    echo "Store Entries for ${1}:"
+    for p in $paths
+    do
+        echo "   ${i} | ${p}"
+        i=$((${i}+1))
+    done
+
+    echo ""
+    read -p "Index: " index
+    echo ""
+
+    i=0
+    for p in $paths
+    do
+        if [[ "${i}" == "${index}" ]]; then
+            key=$p
+        fi
+        i=$((${i}+1))
+    done
+    echo "Closure of ${key}: "
+    nix-store -qR "${STORE}/${key}"
+}
+
+###############################################################################
+# Git Helpers
 ###############################################################################
 
 pushall() {
@@ -148,14 +190,14 @@ pullall() {
 }
 
 git_backup_env() {
-	cp -i .bash_git $ENV_REPO_PATH
-	cp -i .bashrc $ENV_REPO_PATH
-	cp -i .tmux.conf $ENV_REPO_PATH
+	cp -i ~/.bash_git $ENV_REPO_PATH
+	cp -i ~/.bashrc $ENV_REPO_PATH
+	cp -i ~/.tmux.conf $ENV_REPO_PATH
     cp -i $NIXOS_CONF $ENV_REPO_PATH
 
-	cd $REPOS/env
+	pushd $REPOS/env
 	git_dummy_push
-	cd ~
+    popd
 }
 
 git_restore_env() {
