@@ -113,6 +113,7 @@
     rpi-imager
     aircrack-ng
     tcpdump
+    valgrind
   ];
 
   services.pcscd.enable = true;

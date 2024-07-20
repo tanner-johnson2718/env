@@ -236,6 +236,7 @@ cloneall() {
     git clone https://github.com/tanner-johnson2718/ESP32_Enclosure_CTLR
 	git clone https://github.com/tanner-johnson2718/env
     git clone https://github.com/tanner-johnson2718/C_Ref
+    git clone https://github.com/tanner-johnson2718/Nix_RPI_0
     popd
 }
 
