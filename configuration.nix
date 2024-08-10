@@ -1,6 +1,4 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# NixOs Global System Configuration
 
 { config, pkgs, ... }:
 
@@ -24,12 +22,9 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
-  time.timeZone = "America/Chicago";
-
-  # Select internationalisation properties.
+  # Set Time and location
+  time.timeZone = "America/Los_Angeles";
   i18n.defaultLocale = "en_US.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
     LC_IDENTIFICATION = "en_US.UTF-8";
@@ -42,10 +37,8 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Enable the X11 windowing system.
+  # Enable the GNOME Desktop Environment and X11 windowing system.
   services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
@@ -55,9 +48,6 @@
     xkbVariant = "";
   };
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -66,32 +56,21 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # Define my pernsonal user account. Put applications in here that strictly
+  # user applications and not needed by system services.
   users.users.tanner = {
     isNormalUser = true;
     description = "tanner";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-    #  thunderbird
+      
     ];
   };
-
-  # Install firefox.
-  programs.firefox.enable = true;
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -100,8 +79,6 @@
   	vscode
   	prusa-slicer
     gnupg
-    htop
-    tmux
     pinentry-curses
     wireshark-qt
     wireshark-cli
@@ -114,14 +91,92 @@
     aircrack-ng
     tcpdump
     valgrind
+    nix-derivation
+    libreoffice
+    zstd
+    minicom
+    wget
   ];
 
-  services.pcscd.enable = true;
+  # Install firefox
+  programs.firefox.enable = true;
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # Install tmux and 
+  programs.tmux = {
+    enable = true;
+    extraConfig = ''
+      # Tmux color settings
+      set -g default-terminal "screen-256color"
+      set-window-option -g window-status-current-style bg="#7c3e8e"
+
+      # split panes using | and -
+      bind / split-window -h
+      bind - split-window -v
+      unbind '"'
+      unbind %
+
+      # Allow the arrow key to be used immediately after changing windows
+      set-option -g repeat-time 0
+
+      # dont confirm on kill pane
+      bind-key x kill-pane
+
+      # Change prefix key
+      unbind C-b
+      set-option -g prefix C-Space
+      bind-key C-Space send-prefix
+
+      # Makes space hightlight in copy mode, make space enter copy mode, and enter to
+      # copy highlighted
+      setw -g mode-keys vi
+      unbind Space
+      bind Space copy-mode
+      bind-key -T copy-mode-vi c send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
+
+      # Window Changes
+      bind-key -T prefix NPage next-window
+      bind-key -T prefix PPage previous-window
+
+      # Rebind pane size chnage to control wasd
+      unbind C-Right
+      unbind C-Left
+      unbind C-Up
+      unbind C-Down
+      bind-key -r -T prefix C-d resize-pane -R
+      bind-key -r -T prefix C-s resize-pane -D
+      bind-key -r -T prefix C-a resize-pane -L
+      bind-key -r -T prefix C-w resize-pane -U
+
+      # Paragraph and word Jumps 
+      # (Add a new line at begining of PS1 to make thep aragraph jumps more useful)
+      bind-key -T copy-mode-vi C-Up send-keys -X previous-paragraph
+      bind-key -T copy-mode-vi C-Down send-keys -X next-paragraph
+      bind-key -T copy-mode-vi C-Left send-keys -X previous-word
+      bind-key -T copy-mode-vi C-Right send-keys -X next-word-end
+    '';
+  };
+
+  # Bash Setting
+  programs.bash.shellAliases = {
+    ll = "ls -al";
+    la = "ls -A";
+    l = "ls -CF";
+    gs = "git status";
+    gdpush = "git add ./\* && git commit -m \"..\" && git push";
+    user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || return";
+    ng_start="sudo airmon-ng start wlp5s0";
+    ng_stop="sudo airmon-ng stop wlp5s0mon";
+  };
+
+  # Enable GPG agent
   programs.gnupg.agent = {
    enable = true;
    pinentryPackage = pkgs.pinentry-curses;
    enableSSHSupport = true;
-};
+  };
 
   # List services that you want to enable:
 
@@ -134,12 +189,7 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  # Version of first installed version of nixos
   system.stateVersion = "24.05"; # Did you read the comment?
 
   # Enable Flakes

@@ -10,22 +10,16 @@ Higher Level Specification
 * [ ] Act as the "brief case" i.e. given some init requirements such as a generic nix image of version X installed on the hardware, having this repo should allow me to recreate my environment.
 * [ ] Offline secrets have import / export mechanisms
 * [ ] Backup and Restore Policies
+* [ ] Home drive decryption on log in, encryption on log out
 
 
-# Key Modules
+# Things to manage
 
-## System and Hardware
-
+* [X] Tmux conf
 * [ ] Stuff specific to my keyboard
 * [ ] Stuff specific to my headset
 * [ ] Network Management
 * [ ] NFS set up
-* [ ] Home drive decryption on log in, encryption on log out
-
-## Nix Vim
-
-## Home Dir Manager (Secrets)
-
 * [ ] Firefox
     * [ ] Password Key Ring
     * [ ] Bookmarks
@@ -34,6 +28,7 @@ Higher Level Specification
 * [ ] SSH Keys
 * [ ] Repos
 * [ ] Neovim, bashrc confs?
+* [ ] Game Saves
 
 # Qs
 
