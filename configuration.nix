@@ -178,9 +178,9 @@
   '';
 
   programs.bash.interactiveShellInit = ''
-  if [ -z $TMUX ];then
-    tmux attach
-  fi
+    if [ -z $TMUX ];then
+      tmux attach
+    fi
   '';
 
   #############################################################################
