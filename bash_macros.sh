@@ -20,19 +20,6 @@ pull_repos() {
     popd
 }
 
-save_env() {
-    cp -i /etc/nixos/configuration.nix $ENV_REPO_PATH
-
-	pushd $REPOS/env
-	gdpush
-    popd
-}
-
-deploy_env() {
-    echo "Copying ${ENV_REPO_PATH}/configuration.nix"
-    sudo cp -i $ENV_REPO_PATH/configuration.nix /etc/nixos/configuration.nix
-}
-
 cloneall() {
     if [ -d $REPOS ]; then
         echo "${REPOS} dir already exists, deleting and recloning"

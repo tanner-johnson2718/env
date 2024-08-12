@@ -1,7 +1,8 @@
 # Env
 
 * [X] Tmux conf
-* [ ] Bashrc
+* [X] Bashrc
+* [ ] Bash macros
 * [ ] Stuff specific to my keyboard
 * [ ] Stuff specific to my headset
 * [ ] Network Management
@@ -20,7 +21,6 @@
 # Qs
 
 * Control channels
-
 
 # Init pitch
 

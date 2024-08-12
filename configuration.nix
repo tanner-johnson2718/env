@@ -166,6 +166,7 @@
     ng_start="sudo airmon-ng start wlp5s0";
     ng_stop="sudo airmon-ng stop wlp5s0mon";
     nix_update = "sudo nixos-rebuild switch";
+    deploy_env = "sudo cp -i $HOME/repos/env/configuration.nix /etc/nixos/configuration.nix";
   };
 
   programs.bash.promptInit = ''
@@ -192,5 +193,4 @@
 
   # Enable Flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
 }
