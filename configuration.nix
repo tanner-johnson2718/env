@@ -12,12 +12,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  networking.hostName = "nixos";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -37,15 +32,20 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # Enable the GNOME Desktop Environment and X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #############################################################################
+  # DE and HID
+  #############################################################################
 
-  # Configure keymap in X11
+  # xserver is bad name, this is a GUI catch all attr
   services.xserver = {
-    layout = "us";
-    xkbVariant = "";
+    enable = true;
+    xkb.layout = "us";
+    displayManager = {
+      gdm.enable = true;
+    };
+    desktopManager = {
+      gnome.enable = true;
+    };
   };
 
   # Enable sound with pipewire.
@@ -58,11 +58,9 @@
     pulse.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  services.xserver.libinput.enable = true;
-
-  # Define my pernsonal user account. Put applications in here that strictly
-  # user applications and not needed by system services.
+  #############################################################################
+  # Users
+  #############################################################################
   users.users.tanner = {
     isNormalUser = true;
     description = "tanner";
@@ -72,30 +70,24 @@
     ];
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  #############################################################################
+  # System packages
+  #############################################################################
   environment.systemPackages = with pkgs; [
   	vim
   	vscode
   	prusa-slicer
-    gnupg
-    pinentry-curses
-    wireshark-qt
-    wireshark-cli
     git
     xclip
     gcc
-    gnumake
     btop
     rpi-imager
-    aircrack-ng
-    tcpdump
     valgrind
     nix-derivation
     libreoffice
-    zstd
     minicom
     wget
+    gnupg
   ];
 
   # Install firefox
@@ -104,7 +96,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # Install tmux and 
+  #############################################################################
+  # Tmux Conf
+  #############################################################################
   programs.tmux = {
     enable = true;
     extraConfig = ''
@@ -159,7 +153,9 @@
     '';
   };
 
-  # Bash Setting
+  #############################################################################
+  # Bash Settings
+  #############################################################################
   programs.bash.shellAliases = {
     ll = "ls -al";
     la = "ls -A";
@@ -169,25 +165,27 @@
     user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || return";
     ng_start="sudo airmon-ng start wlp5s0";
     ng_stop="sudo airmon-ng stop wlp5s0mon";
+    nix_update = "sudo nixos-rebuild switch";
   };
 
-  # Enable GPG agent
-  programs.gnupg.agent = {
-   enable = true;
-   pinentryPackage = pkgs.pinentry-curses;
-   enableSSHSupport = true;
+  programs.bash.promptInit = ''
+    export GIT_PS1_SHOWCOLORHINTS=true
+    export GIT_PS1_SHOWDIRTYSTATE=true
+    export GIT_PS1_SHOWUNTRACKEDFILES=true
+    source /run/current-system/sw/share/bash-completion/completions/git-prompt.sh
+    PS1='\n\[\033[01;34m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
+  '';
+
+  #############################################################################
+  # Install GPG and Enable GPG agent (for using gpg encrypt)
+  #############################################################################
+  programs.gnupg = {
+    agent = {
+      enable = true;
+      pinentryPackage = pkgs.pinentry-curses;
+      enableSSHSupport = true;
+    };
   };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
 
   # Version of first installed version of nixos
   system.stateVersion = "24.05"; # Did you read the comment?
