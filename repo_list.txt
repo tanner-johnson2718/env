@@ -1,0 +1,13 @@
+git clone https://github.com/tanner-johnson2718/ESP32_Deluminator.git
+git clone https://github.com/tanner-johnson2718/MEME_ETH_LAB.git
+git clone https://github.com/tanner-johnson2718/MEME_OS_3.git
+git clone https://github.com/tanner-johnson2718/PI_JTAG_DBGR
+git clone https://github.com/tanner-johnson2718/MEME_OS_Project
+git clone https://github.com/tanner-johnson2718/Ricks_Designs
+git clone https://github.com/tanner-johnson2718/GPS
+git clone https://github.com/tanner-johnson2718/MEME_OS
+git clone https://github.com/tanner-johnson2718/MEME_OS_2
+git clone https://github.com/tanner-johnson2718/Calc_N_Phys
+git clone https://github.com/tanner-johnson2718/Crypto
+git clone https://github.com/tanner-johnson2718/env
+git clone https://github.com/tanner-johnson2718/C_Ref

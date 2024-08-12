@@ -166,7 +166,7 @@
     ng_start="sudo airmon-ng start wlp5s0";
     ng_stop="sudo airmon-ng stop wlp5s0mon";
     nix_update = "sudo nixos-rebuild switch";
-    deploy_env = "sudo cp -i $HOME/repos/env/configuration.nix /etc/nixos/configuration.nix";
+    deploy_conf = "sudo cp -i $HOME/repos/env/configuration.nix /etc/nixos/configuration.nix";
   };
 
   programs.bash.promptInit = ''
@@ -175,6 +175,12 @@
     export GIT_PS1_SHOWUNTRACKEDFILES=true
     source /run/current-system/sw/share/bash-completion/completions/git-prompt.sh
     PS1='\n\[\033[01;34m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
+  '';
+
+  programs.bash.interactiveShellInit = ''
+  if [ -z $TMUX ];then
+    tmux attach
+  fi
   '';
 
   #############################################################################

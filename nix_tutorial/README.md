@@ -96,6 +96,47 @@ Derivation is an intermediate artifact that describes all the relevant component
     * Added boiler plate composition [default.nix](./default.nix)
     *  run `nix-env -f ./default.nix -i pigpio` in repo on pi
     *  sudo pigpiod fails  -> [Issue](https://github.com/NixOS/nixpkgs/issues/122993)
+
+# Some bash Code I guess
+
+```bash
+# Take in a package name and search the store for all paths.
+# Ask the user which store entity they'd like to find the closure of
+# Print the closure of that enity. The closure is all the dependancies of that
+# package. The closure of the binary of the packge give the runtime deps while
+# the closure of the drv gives the build time dependancies
+closure() {
+    if [[ $# != 1 ]]; then
+        echo "closure <pname>"
+        return
+    fi
+
+    paths=$(ls ${STORE} | grep $1)
+    paths=$(echo $paths | tr " " "\n")
+    i=0
+    echo "Store Entries for ${1}:"
+    for p in $paths
+    do
+        echo "   ${i} | ${p}"
+        i=$((${i}+1))
+    done
+
+    echo ""
+    read -p "Index: " index
+    echo ""
+
+    i=0
+    for p in $paths
+    do
+        if [[ "${i}" == "${index}" ]]; then
+            key=$p
+        fi
+        i=$((${i}+1))
+    done
+    echo "Closure of ${key}: "
+    nix-store -qR "${STORE}/${key}"
+}
+```
     
 
 # References
