@@ -91,13 +91,6 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-  };
-
   #############################################################################
   # Tmux Conf
   #############################################################################
@@ -157,7 +150,7 @@
 
   #############################################################################
   # Bash Settings
-  #    - FIX nix_rebuild targets home directory with hardcoded path
+  #    - WARN nix_rebuild targets home directory with hardcoded path
   #############################################################################
   programs.bash.shellAliases = {
     ll = "ls -al";
@@ -174,7 +167,7 @@
     ng_stop="sudo airmon-ng stop wlp5s0mon";
     nix_rebuild = ''
       pushd . > /dev/null ;
-      cd /home/tanner/repos/env ;
+      cd /home/lcars/repos/env ;
       sudo nixos-rebuild --flake .#lcars switch ;
       popd > /dev/null
     '';
