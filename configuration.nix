@@ -12,7 +12,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos";
+  networking.hostName = "lcars";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -74,9 +74,9 @@
   # System packages
   #############################################################################
   environment.systemPackages = with pkgs; [
-  	vim
-  	vscode
-  	prusa-slicer
+    vim
+    vscode
+    prusa-slicer
     git
     xclip
     gcc
@@ -95,6 +95,13 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
 
   #############################################################################
   # Tmux Conf
