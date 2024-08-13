@@ -56,9 +56,9 @@
   #############################################################################
   # Users
   #############################################################################
-  users.users.tanner = {
+  users.users.lcars = {
     isNormalUser = true;
-    description = "tanner";
+    description = "Main System User";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       
@@ -157,6 +157,7 @@
 
   #############################################################################
   # Bash Settings
+  #    - FIX nix_rebuild targets home directory with hardcoded path
   #############################################################################
   programs.bash.shellAliases = {
     ll = "ls -al";
@@ -164,11 +165,19 @@
     l = "ls -CF";
     gs = "git status";
     gdpush = "git add ./\* && git commit -m \"..\" && git push";
-    user_confirm="read -p \"Continue? (Y/N): \" confirm && [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || return";
+    user_confirm=''
+    read -p \"Continue? (Y/N): \" confirm && 
+    [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || 
+    return
+    '';
     ng_start="sudo airmon-ng start wlp5s0";
     ng_stop="sudo airmon-ng stop wlp5s0mon";
-    nix_update = "sudo nixos-rebuild switch";
-    deploy_conf = "sudo cp -i $HOME/repos/env/configuration.nix /etc/nixos/configuration.nix";
+    nix_rebuild = ''
+      pushd . > /dev/null ;
+      cd /home/tanner/repos/env ;
+      sudo nixos-rebuild --flake .#lcars switch ;
+      popd > /dev/null
+    '';
   };
 
   programs.bash.promptInit = ''
