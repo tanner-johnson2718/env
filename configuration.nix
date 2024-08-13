@@ -83,6 +83,7 @@
     minicom
     wget
     gnupg
+    home-manager
   ];
 
   # Install firefox
