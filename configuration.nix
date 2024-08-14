@@ -4,7 +4,11 @@
 
 {
   
-  # Bootloader.
+  #############################################################################
+  # Boot, Security, and Networking
+  #############################################################################
+
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -12,6 +16,14 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  # Needed Encrypted Home Drive
+  security.pam.enableEcryptfs = true;
+  boot.kernelModules = ["ecryptfs"];
+
+  #############################################################################
+  # DE and HID
+  #############################################################################
 
   # Set Time and location
   time.timeZone = "America/Los_Angeles";
@@ -27,10 +39,6 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-
-  #############################################################################
-  # DE and HID
-  #############################################################################
 
   # xserver is bad name, this is a GUI catch all attr
   services.xserver = {
@@ -55,30 +63,6 @@
   };
 
   #############################################################################
-  # LCARS User, Home Manager, and Secrets
-  #############################################################################
-  users.users.lcars = {
-    isNormalUser = true;
-    description = "Main System User";
-    extraGroups = [ "networkmanager" "wheel" ];
-  };
-
-  home-manager.users.lcars = 
-  { pkgs, ... }: 
-  {
-    programs.git = 
-    {
-      enable = true;
-      userName = "LCARS";
-      userEmail = "tanner.johnson2718@gmail.com";
-    };
-
-    # The state version is required and should stay at the version you
-    # originally installed.
-    home.stateVersion = "24.05";
-  };
-  
-  #############################################################################
   # System packages
   #############################################################################
   environment.systemPackages = with pkgs; [
@@ -93,9 +77,8 @@
     libreoffice
     minicom
     wget
-    gnupg
-    home-manager
     git
+    ecryptfs
   ];
 
   # Install firefox
@@ -103,6 +86,15 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  #############################################################################
+  # Main System User
+  #############################################################################
+  users.users.lcars = {
+    isNormalUser = true;
+    description = "Main System User";
+    extraGroups = [ "networkmanager" "wheel" ];
+  };
 
   #############################################################################
   # Tmux Conf
@@ -163,7 +155,6 @@
 
   #############################################################################
   # Bash Settings
-  #    - WARN nix_rebuild targets home directory with hardcoded path
   #############################################################################
   programs.bash.shellAliases = {
     ll = "ls -al";
@@ -176,8 +167,6 @@
     [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || 
     return
     '';
-    ng_start="sudo airmon-ng start wlp5s0";
-    ng_stop="sudo airmon-ng stop wlp5s0mon";
     nix_rebuild = ''
       pushd . > /dev/null ;
       cd /home/lcars/repos/env ;
@@ -201,20 +190,10 @@
   '';
 
   #############################################################################
-  # Install GPG and Enable GPG agent (for using gpg encrypt)
+  # Flakes and system version
   #############################################################################
-  programs.gnupg = {
-    agent = {
-      enable = true;
-      pinentryPackage = pkgs.pinentry-curses;
-      enableSSHSupport = true;
-    };
-  };
-
-  # Version of first installed version of nixos
-  system.stateVersion = "24.05"; # Did you read the comment?
-
-  # Enable Flakes
+  
+  system.stateVersion = "24.05";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 }
