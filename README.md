@@ -1,24 +1,28 @@
-# Env 
+# TODO 
 
 * [X] Tmux conf
 * [X] Bashrc
-* [ ] Flakify your sys
-    * [ ] Can I remove all notions of a channel on my sys??? Channels = "Big Dumb"
-    * [ ] Can I verify whats in the flake.lock is whats on my sys 
-* [ ] Neovim?
-* [ ] Repos
-* [ ] Firefox
-    * [ ] Password Key Ring
-    * [ ] Bookmarks
-* [ ] Steam
 
+* [X] Flakify your sys
+* [ ] Home Manager and Sops?
+    * [ ] Git
+        * [ ] Keys
+        * [ ] Repos
+    * [ ] Firefox
+        * [ ] Password Key Ring
+        * [ ] Bookmarks
+    * [ ] Gnome Settings
 * [ ] Stuff specific to my keyboard
-* [ ] Documents
-* [ ] SSH Keys
 * [ ] Stuff specific to my headset
+
+* Why da fuck is homemanger not doing anything with my .gitconfig??
+
+* [ ] Dev Envs, bootable images, debugging, etc.
+* [ ] NeoVim
+
+
+Extraneous HW
 * [ ] Network Management
 * [ ] NFS set up
-* [ ] Manage Channels
-* [ ] Hyperlndr??
 * [ ] Partitions
 * [ ] Nvidia drivers

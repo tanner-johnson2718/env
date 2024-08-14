@@ -55,17 +55,29 @@
   };
 
   #############################################################################
-  # Users
+  # LCARS User, Home Manager, and Secrets
   #############################################################################
   users.users.lcars = {
     isNormalUser = true;
     description = "Main System User";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      
-    ];
   };
 
+  home-manager.users.lcars = 
+  { pkgs, ... }: 
+  {
+    programs.git = 
+    {
+      enable = true;
+      userName = "LCARS";
+      userEmail = "tanner.johnson2718@gmail.com";
+    };
+
+    # The state version is required and should stay at the version you
+    # originally installed.
+    home.stateVersion = "24.05";
+  };
+  
   #############################################################################
   # System packages
   #############################################################################
@@ -73,9 +85,7 @@
     vim
     vscode
     prusa-slicer
-    git
     xclip
-    gcc
     btop
     rpi-imager
     valgrind
@@ -85,6 +95,7 @@
     wget
     gnupg
     home-manager
+    git
   ];
 
   # Install firefox
