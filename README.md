@@ -20,3 +20,5 @@
 * [ ] NFS set up
 * [ ] Manage Channels
 * [ ] Hyperlndr??
+* [ ] Partitions
+* [ ] Nvidia drivers

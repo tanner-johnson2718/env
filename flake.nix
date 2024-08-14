@@ -10,9 +10,11 @@
   outputs = { self, nixpkgs, ... }@inputs: {
     nixosConfigurations.lcars = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      # extraSpecialArgs = {inherit inputs;};
       modules = [ 
         ./configuration.nix
         ./hardware-configuration.nix
+        inputs.home-manager.nixosModules.default
       ];
     };
   };
