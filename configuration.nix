@@ -2,6 +2,9 @@
 
 { config, pkgs, inputs, ... }:
 
+let
+  main_user_name="lcars";
+in
 {
   
   #############################################################################
@@ -12,7 +15,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "lcars";
+  networking.hostName = "${main_user_name}";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -94,7 +97,7 @@
   #############################################################################
   # Main System User
   #############################################################################
-  users.users.lcars = {
+  users.users.${main_user_name} = {
     isNormalUser = true;
     description = "Main System User";
     extraGroups = [ "networkmanager" "wheel" ];
@@ -173,15 +176,16 @@
     '';
     nix_rebuild = ''
       pushd . > /dev/null ;
-      cd /home/lcars/repos/env ;
-      sudo nixos-rebuild --flake .#lcars switch ;
+      cd /home/${main_user_name}/repos/env ;
+      sudo nixos-rebuild --flake .#default switch ;
       popd > /dev/null
     '';
     bak=''
       pushd . > /dev/null ;
-      cd /home
-      sudo tar -czvf lcars.tar.gz .ecryptfs
-      sudo mv lcars.tar.gz /run/media/lcars/SNAPSHOTS
+      cd /home ;
+      sudo tar -czvf ${main_user_name}.tar.gz .ecryptfs ;
+      sudo cp ${main_user_name}.tar.gz ${main_user_name}.tar.gz.bak
+      sudo mv ${main_user_name}.tar.gz /run/media/${main_user_name}/SNAPSHOTS ;
       popd > /dev/null
     '';
   };

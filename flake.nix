@@ -11,7 +11,7 @@
 
   outputs = { self, nixpkgs, ... }@inputs: 
   {
-    nixosConfigurations.lcars = nixpkgs.lib.nixosSystem 
+    nixosConfigurations.default = nixpkgs.lib.nixosSystem 
     {
       system = "x86_64-linux";
       modules = [ 
