@@ -11,7 +11,6 @@ in
   # Boot, Security, and Networking
   #############################################################################
 
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -163,6 +162,7 @@ in
   #############################################################################
   # Bash Settings
   #############################################################################
+  users.defaultUserShell = pkgs.bash;
   programs.bash.shellAliases = {
     ll = "ls -al";
     la = "ls -A";

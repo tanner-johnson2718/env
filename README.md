@@ -12,7 +12,7 @@
 * Double check bak alias works 
 * Triple Check your backup and restore mechanisms
 * Quadruple Check going over backup and restore mechanisms
-* Get your qmk key and qmk flash process under nix management
+* Test a system reset
 
 * Dev Envs, bootable images, debugging, etc.
 
@@ -29,3 +29,4 @@ Extraneous HW / Issues
 
 * gnome settings under nix
 * term emulator settings under nix
+* Get your qmk key and qmk flash process under nix management
