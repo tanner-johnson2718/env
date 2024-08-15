@@ -4,10 +4,12 @@
 * [X] Bashrc
 
 * [X] Flakify your sys
-* [ ] Encrypted home drive
-    * [ ] Save / Load mechanisms
+* [X] Encrypted home drive
+    * [X] Save / Load mechanisms
+    * [ ] Double check we can mount from the thumb drive
+    * [ ] Double check alias works 
 
-* [ ] Stuff specific to my keyboard
+* [X] Stuff specific to my keyboard
 * [ ] Stuff specific to my headset
 
 

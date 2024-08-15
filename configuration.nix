@@ -79,6 +79,10 @@
     wget
     git
     ecryptfs
+    qmk
+    wb32-dfu-updater
+    zip
+    unzip
   ];
 
   # Install firefox
@@ -171,6 +175,13 @@
       pushd . > /dev/null ;
       cd /home/lcars/repos/env ;
       sudo nixos-rebuild --flake .#lcars switch ;
+      popd > /dev/null
+    '';
+    bak=''
+      pushd . > /dev/null ;
+      cd /home
+      sudo tar -czvf lcars.tar.gz .ecryptfs
+      sudo mv lcars.tar.gz /run/media/lcars/SNAPSHOTS
       popd > /dev/null
     '';
   };
