@@ -14,9 +14,10 @@
     nixosConfigurations.default = nixpkgs.lib.nixosSystem 
     {
       system = "x86_64-linux";
-      modules = [ 
-        ./configuration.nix
-        ./hardware-configuration.nix
+      modules = [
+        ./common.nix
+        ./sys/dev.nix
+        ./hw/hp_laptop.nix
       ];
     };
   };
