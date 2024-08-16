@@ -29,16 +29,16 @@
     ###########################################################################
     # Nix Overwrite Nix Packages
     ###########################################################################
-    packages = nixpkgs.lib.genAttrs nixpkgs.lib.platforms.all (system:
-      let
-        pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-        theme = import ./theme.nix;
-      in
-      {
-        pkgs = pkgs // removeAttrs self.packages.${system} [ "pkgs" ];
-        alacritty = pkgs.callPackage ./pkgs/alacritty.nix { inherit theme; };
-      }
-    );
+    # packages = nixpkgs.lib.genAttrs nixpkgs.lib.platforms.all (system:
+    #   let
+    #     pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
+    #     theme = import ./theme.nix;
+    #   in
+    #   {
+    #     pkgs = pkgs // removeAttrs self.packages.${system} [ "pkgs" ];
+    #     alacritty = pkgs.callPackage ./pkgs/alacritty.nix { inherit theme; };
+    #   }
+    # );
 
   };
 }
