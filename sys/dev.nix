@@ -9,7 +9,7 @@ in
   # Networking
   networking.networkmanager.enable = true;
   networking.hostName = "${main_user_name}";
-  
+
   # Needed Encrypted Home Drive
   security.pam.enableEcryptfs = true;
   boot.kernelModules = ["ecryptfs"];
@@ -56,7 +56,6 @@ in
     wget
     ecryptfs
     qmk
-    wb32-dfu-updater
     zip
     unzip
     tree
@@ -181,6 +180,7 @@ in
 
   #############################################################################
   # QMK Keyboard Config
+  #   - Overwrite qmk nic package so that it downloads source 
   #############################################################################
 
   # kbConf = ''
