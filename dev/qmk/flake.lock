@@ -16,26 +16,9 @@
         "type": "github"
       }
     },
-    "qmk_firmware": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1723731727,
-        "narHash": "sha256-umpJaFV3INLnWiSu1fGHDy/M9EMUmiCIrvri/BA+vbk=",
-        "owner": "qmk",
-        "repo": "qmk_firmware",
-        "rev": "fe50774cb488f981dfd41c7a5bc5f34dfcd9cb9d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "qmk",
-        "repo": "qmk_firmware",
-        "type": "github"
-      }
-    },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs",
-        "qmk_firmware": "qmk_firmware"
+        "nixpkgs": "nixpkgs"
       }
     }
   },
