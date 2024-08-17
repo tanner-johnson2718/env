@@ -11,19 +11,20 @@
   outputs = {self, nixpkgs, ...}@inputs:
   let
     system = "x86_64-linux";
+    keyBoard = "gmmk/gmmk2/p65/ansi";
   in {
     devShells."${system}".default = 
     let
-      pkgs = import nixpkgs {
-          inherit system;
-        };
+      pkgs = import nixpkgs { inherit system; };
     in pkgs.mkShell {
       packages = with pkgs; [
         qmk
       ];
 
       shellHook = ''
-        echo brah
+        echo qmk_firmware outPath = ${inputs.qmk_firmware.outPath}
+        echo keyboard             = ${keyBoard}
+        echo patching             = ${inputs.qmk_firmware.outPath}/keyboards/${keyBoard}/keymaps/default/keymap.c
       '';
     };
   };
