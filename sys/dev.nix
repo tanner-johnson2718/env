@@ -191,7 +191,15 @@ in
     export GIT_PS1_SHOWDIRTYSTATE=true
     export GIT_PS1_SHOWUNTRACKEDFILES=true
     source /run/current-system/sw/share/bash-completion/completions/git-prompt.sh
-    PS1='\n\[\033[01;34m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
+    
+
+    if [[ "$SHLVL" -eq "2" ]]; then
+      export PROMPT_COLOR='34'
+    else
+      export PROMPT_COLOR='31'
+    fi
+
+    export PS1='\n\[\033[01;''${PROMPT_COLOR}m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
   '';
 
   programs.bash.interactiveShellInit = ''
