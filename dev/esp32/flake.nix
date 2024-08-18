@@ -1,6 +1,6 @@
 {
   description = ''
-    ESP32 dev env shell
+    ESP32 dev env shell. We override mirrexagon's esp idf flake
   '';
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";

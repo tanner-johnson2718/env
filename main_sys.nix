@@ -36,6 +36,9 @@ in
   security.pam.enableEcryptfs = true;
   boot.kernelModules = ["ecryptfs"];
 
+  # To emulate arm64 devices
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   #############################################################################
   # DE, Audio,KB
   #############################################################################
