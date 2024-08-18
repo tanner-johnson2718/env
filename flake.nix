@@ -19,7 +19,7 @@
     {
       system = "x86_64-linux";
       modules = [
-        ./sys/dev.nix
+        ./main_sys.nix
         ./hw/hp_laptop.nix
       ];
     };

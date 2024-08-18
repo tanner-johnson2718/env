@@ -9,7 +9,7 @@
   let
     system = "x86_64-linux";
     espidf_url = "https://github.com/espressif/esp-idf.git";
-    edpidf_branch = "release/v5.3";
+    espidf_branch = "release/v5.3";
     espidf_rev = "466a392a7683f42feed28753b8f725c2aa82d804";
   in
   {
@@ -53,6 +53,6 @@
           fi
         '';
       };
-  } 
+  }; 
     
 }
