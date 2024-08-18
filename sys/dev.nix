@@ -37,7 +37,7 @@ in
   boot.kernelModules = ["ecryptfs"];
 
   #############################################################################
-  # DE and Sound
+  # DE, Audio,KB
   #############################################################################
 
   # xserver is bad name, this is a GUI catch all attr
