@@ -173,7 +173,7 @@ in
     la = "ls -A";
     l = "ls -CF";
     gs = "git status";
-    gdpush = "git add ./\* && git commit -m \"..\" && git push";
+    gdpush = "git add -u && git commit -m \"..\" && git push";
     user_confirm=''
     read -p \"Continue? (Y/N): \" confirm && 
     [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || 
