@@ -219,6 +219,30 @@ in
       done
       popd > /dev/null
     '';
+    cloneall=''
+      pushd . > /dev/null ;
+      cd ${repos_path} ;
+      git clone git@github:tanner-johnson2718/ESP32_Deluminator.git ;
+      git clone git@github:tanner-johnson2718/MEME_ETH_LAB.git ;
+      git clone git@github:tanner-johnson2718/MEME_OS_3.git ;
+      git clone git@github:tanner-johnson2718/PI_JTAG_DBGR.git ;
+      git clone git@github:tanner-johnson2718/MEME_OS_Project.git ;
+      git clone git@github:tanner-johnson2718/Ricks_Designs.git ;
+      git clone git@github:tanner-johnson2718/GPS.git ;
+      git clone git@github:tanner-johnson2718/MEME_OS.git ;
+      git clone git@github:tanner-johnson2718/Klipper_C137.git ;
+      git clone git@github:tanner-johnson2718/MEME_OS_2.git ;
+      git clone git@github:tanner-johnson2718/Calc_N_Phys.git ;
+      git clone git@github:tanner-johnson2718/Crypto.git ;
+      git clone git@github:tanner-johnson2718/A-Car.git ;
+      git clone git@github:tanner-johnson2718/ESP32_Enclosure_CTLR.git ;
+	    git clone git@github:tanner-johnson2718/env.git ;
+      git clone git@github:tanner-johnson2718/C_Ref.git ;
+      git clone git@github:tanner-johnson2718/Nix_RPI_0.git ;
+      git clone git@github:tanner-johnson2718/Angry_Hexy.git ;
+      git clone git@github:tanner-johnson2718/InsultingEarlyBird.git ;
+      popd> /dev/null ;
+    '';
   };
 
   programs.bash.promptInit = ''
