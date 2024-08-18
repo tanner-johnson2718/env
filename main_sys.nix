@@ -4,6 +4,7 @@
 
 let
   main_user_name="lcars";
+  repos_path="/var/git";
 in
 {
   #############################################################################
@@ -38,6 +39,11 @@ in
 
   # To emulate arm64 devices
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
+  # Make a systemwide git repository dir
+  systemd.tmpfiles.rules = [
+    "d ${repos_path} - ${main_user_name} users -"
+  ];
 
   #############################################################################
   # DE, Audio,KB
@@ -175,16 +181,42 @@ in
     '';
     nix_rebuild = ''
       pushd . > /dev/null ;
-      cd /home/${main_user_name}/repos/env ;
+      cd ${repos_path}/env ;
       sudo nixos-rebuild --flake .#default switch ;
       popd > /dev/null
     '';
-    bak=''
+    home_bak=''
       pushd . > /dev/null ;
       cd /home ;
       sudo tar -czvf ${main_user_name}.tar.gz .ecryptfs ;
       sudo cp ${main_user_name}.tar.gz ${main_user_name}.tar.gz.bak
       sudo mv ${main_user_name}.tar.gz /run/media/${main_user_name}/SNAPSHOTS ;
+      popd > /dev/null
+    '';
+    pushall=''
+      pushd . > /dev/null
+      for d in ${repos_path}/* ; do
+        cd $d
+        gdpush
+      done
+      popd > /dev/null
+    '';
+    pullall=''
+      pushd . > /dev/null
+      for d in ${repos_path}/* ; do
+        cd $d
+        git pull
+      done
+      popd > /dev/null
+    '';
+    statall=''
+      pushd . > /dev/null
+      for d in ${repos_path}/* ; do
+        echo $d
+        cd $d
+        git status --porcelain
+        echo   
+      done
       popd > /dev/null
     '';
   };
