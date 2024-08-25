@@ -2,7 +2,10 @@
   description = "";
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
-  outputs = { self, nixpkgs, ... }@inputs: 
+  outputs = { self, nixpkgs, ... }@inputs:
+  let
+    system = "x86_64-linux";
+  in
   {
 
     ###########################################################################
@@ -10,7 +13,7 @@
     ###########################################################################
     nixosConfigurations.default = nixpkgs.lib.nixosSystem 
     {
-      system = "x86_64-linux";
+      inherit system;
       modules = [
         ./hp_laptop.nix
         (
@@ -28,6 +31,20 @@
       ];
     };
 
+    ###########################################################################
+    # Nix Modules to export sys config other systems
+    ###########################################################################
+
+    nixosModules.user = (import ./user.nix);
+
+    ###########################################################################
+    # Nix Shells to export developer environments to other system
+    ###########################################################################
+
+    devShells.${system}.aircrack = (import ./dev/aircrack/aircrack.nix)
+    { 
+      pkgs = (import nixpkgs { inherit system; } );
+    };
 
 
   };

@@ -84,18 +84,40 @@ in
     ###########################################################################
     # Tmp Files Rules. The /var/log rule gets overridden by a later rule and 
     # its unclear how to overwrite it.
+    #
+    # Also some systemd timers.
     ###########################################################################
 
     systemd.tmpfiles.rules = [
       "d ${cfg.reposPath} - ${cfg.userName} users -"
     ]
     ++(if cfg.enableEcryptfs then [
-      "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users -"
+      "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users 7d"
     ] else [])
     ++(if cfg.enableCleanJobs then [
       "e /home/${cfg.userName}/.cache - ${cfg.userName} users 0"
       "e /var/log/journal - root root 0"
     ] else []);
+
+    systemd.timers."ecryptfsBakAgent" = lib.mkIf cfg.enableEcryptfs {
+    wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "5m";
+        OnUnitActiveSec = "1d";
+        Unit = "ecryptfsBakAgent.service";
+      };
+    };
+
+    systemd.services."ecryptfsBakAgent" = {
+      path = with pkgs; [ gnutar gzip ];
+      script = ''
+        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz -C /home/${cfg.userName}/.Private/*
+      '';
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+      };
+    };
 
     #############################################################################
     # Main System User
