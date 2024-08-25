@@ -1,6 +1,5 @@
 {
-  description = "System configuration flake";
-
+  description = "";
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
   outputs = { self, nixpkgs, ... }@inputs: 
@@ -13,24 +12,22 @@
     {
       system = "x86_64-linux";
       modules = [
-        ./main_sys.nix
-        ./hw/hp_laptop.nix
+        ./hp_laptop.nix
+        (
+          {config, ...}:{
+            imports = [./user.nix];
+            config.user.config.enable = true;
+            config.user.config.userName = "lcars";
+            config.user.config.reposPath = "/var/git";
+            config.user.config.enableDE = true;
+            config.user.config.enableEcryptfs = true;
+            config.user.config.ecryptfsBakPath = "/var/ecryptfsBak";
+          }
+        )
       ];
     };
 
-    ###########################################################################
-    # Nix Overwrite Nix Packages
-    ###########################################################################
-    # packages = nixpkgs.lib.genAttrs nixpkgs.lib.platforms.all (system:
-    #   let
-    #     pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
-    #     theme = import ./theme.nix;
-    #   in
-    #   {
-    #     pkgs = pkgs // removeAttrs self.packages.${system} [ "pkgs" ];
-    #     alacritty = pkgs.callPackage ./pkgs/alacritty.nix { inherit theme; };
-    #   }
-    # );
+
 
   };
 }
