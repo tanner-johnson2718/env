@@ -41,11 +41,13 @@
     # Nix Shells to export developer environments to other system
     ###########################################################################
 
-    devShells.${system}.aircrack = (import ./dev/aircrack/aircrack.nix)
-    { 
+    devShells.${system} =
+    let
       pkgs = (import nixpkgs { inherit system; } );
+    in
+    {
+      aircrack = (import ./dev/aircrack/aircrack.nix){ inherit pkgs; };
+      qmk = (import ./dev/qmk/qmk.nix){ inherit pkgs; };
     };
-
-
   };
 }
