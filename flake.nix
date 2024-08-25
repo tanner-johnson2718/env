@@ -22,6 +22,7 @@
             config.user.config.enableDE = true;
             config.user.config.enableEcryptfs = true;
             config.user.config.ecryptfsBakPath = "/var/ecryptfsBak";
+            config.user.config.enableCleanJobs = true;
           }
         )
       ];

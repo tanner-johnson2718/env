@@ -35,10 +35,20 @@ in
       example = "/var/ecryptfsBak";
       description = "Path to where encrypted home drive back ups go";
     };
+    user.config.enableCleanJobs = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      example = "true";
+      description = "Run various disk saving clean up jobs";
+    };
   };
 
   config = lib.mkIf cfg.enable {
-    
+
+    ###########################################################################
+    # High Level and general system config
+    ###########################################################################
+
     system.stateVersion = "24.05";
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
   
@@ -56,14 +66,6 @@ in
     networking.networkmanager.enable = lib.mkDefault true;
     networking.hostName = lib.mkDefault cfg.userName;
 
-    # Make a systemwide git repository dir
-    systemd.tmpfiles.rules = [
-      "d ${cfg.reposPath} - ${cfg.userName} users -"
-    ]
-      ++ ( if cfg.enableEcryptfs then [
-      "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users -"
-    ] else []);
-
     # Set Time and location
     time.timeZone = "America/Los_Angeles";
     i18n.defaultLocale = "en_US.UTF-8";
@@ -78,6 +80,22 @@ in
       LC_TELEPHONE = "en_US.UTF-8";
       LC_TIME = "en_US.UTF-8";
     };
+
+    ###########################################################################
+    # Tmp Files Rules. The /var/log rule gets overridden by a later rule and 
+    # its unclear how to overwrite it.
+    ###########################################################################
+
+    systemd.tmpfiles.rules = [
+      "d ${cfg.reposPath} - ${cfg.userName} users -"
+    ]
+    ++(if cfg.enableEcryptfs then [
+      "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users -"
+    ] else [])
+    ++(if cfg.enableCleanJobs then [
+      "e /home/${cfg.userName}/.cache - ${cfg.userName} users 0"
+      "e /var/log/journal - root root 0"
+    ] else []);
 
     #############################################################################
     # Main System User
@@ -103,6 +121,7 @@ in
       socat
       nmap
       jq
+      git
     ]
       ++ (if cfg.enableDE then [vscode] else [] )
       ++ (if cfg.enableDE then [prusa-slicer] else [] )
@@ -185,7 +204,7 @@ in
       '';
       nix_rebuild = ''
         pushd . > /dev/null ;
-        cd ${cfg.userName}/env ;
+        cd ${cfg.reposPath}/env ;
         sudo nixos-rebuild --flake .#default switch ;
         popd > /dev/null
       '';
