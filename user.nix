@@ -165,6 +165,9 @@ in
         # status bar
         set-option -g status-right "#(whoami)@#(hostname)"
 
+        # 1 index windows
+        set -g base-index 1
+
         # split panes using | and -
         bind / split-window -h
         bind - split-window -v
