@@ -162,6 +162,9 @@ in
         set -g default-terminal "screen-256color"
         set-window-option -g window-status-current-style bg="#7c3e8e"
 
+        # status bar
+        set-option -g status-right "#(whoami)@#(hostname)"
+
         # split panes using | and -
         bind / split-window -h
         bind - split-window -v
