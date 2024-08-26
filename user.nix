@@ -35,12 +35,6 @@ in
       example = "/var/ecryptfsBak";
       description = "Path to where encrypted home drive back ups go";
     };
-    user.config.enableCleanJobs = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      example = "true";
-      description = "Run various disk saving clean up jobs";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -48,15 +42,13 @@ in
     ###########################################################################
     # High Level and general system config
     ###########################################################################
-
-    system.stateVersion = "24.05";
-    nix.settings.experimental-features = [ "nix-command" "flakes" ];
   
     # DIE PULSE AUDIO DIE!!
     hardware.pulseaudio.enable = false;
 
-    # Always want unfree packages
+    # Always want unfree packages and unsupported
     nixpkgs.config.allowUnfree = true;
+    nixpkgs.config.allowUnsupportedSystem = true;
 
     # I want real time in user space
     security.rtkit.enable = true;
@@ -93,10 +85,6 @@ in
     ]
     ++(if cfg.enableEcryptfs then [
       "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users 7d"
-    ] else [])
-    ++(if cfg.enableCleanJobs then [
-      "e /home/${cfg.userName}/.cache - ${cfg.userName} users 0"
-      "e /var/log/journal - root root 0"
     ] else []);
 
     systemd.timers."ecryptfsBakAgent" = lib.mkIf cfg.enableEcryptfs {
@@ -111,7 +99,8 @@ in
     systemd.services."ecryptfsBakAgent" = {
       path = with pkgs; [ gnutar gzip ];
       script = ''
-        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz -C /home/${cfg.userName}/.Private/*
+        /run/current-system/sw/bin/rm -rf /home/${cfg.userName}/.cache/*
+        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz -C /home/.ecryptfs/${cfg.userName}/.Private/*
       '';
       serviceConfig = {
         Type = "oneshot";
