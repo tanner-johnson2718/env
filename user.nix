@@ -74,8 +74,7 @@ in
     };
 
     ###########################################################################
-    # Tmp Files Rules. The /var/log rule gets overridden by a later rule and 
-    # its unclear how to overwrite it.
+    # Tmp Files Rules.
     #
     # Also some systemd timers.
     ###########################################################################
@@ -100,7 +99,7 @@ in
       path = with pkgs; [ gnutar gzip ];
       script = ''
         /run/current-system/sw/bin/rm -rf /home/${cfg.userName}/.cache/*
-        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz -C /home/.ecryptfs/${cfg.userName}/.Private/*
+        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz /home/.ecryptfs/${cfg.userName}/
       '';
       serviceConfig = {
         Type = "oneshot";

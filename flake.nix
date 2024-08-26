@@ -32,7 +32,7 @@
             config.user.config.enable = true;
             config.user.config.userName = "lcars";
             config.user.config.reposPath = "/var/git";
-            config.user.config.enableDE = true.nix;
+            config.user.config.enableDE = true;
             config.user.config.enableEcryptfs = true;
             config.user.config.ecryptfsBakPath = "/var/ecryptfsBak";
           }
