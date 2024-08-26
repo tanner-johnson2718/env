@@ -7,8 +7,8 @@ in
     user.config.enable = lib.mkEnableOption "Enable User Module";
     user.config.userName = lib.mkOption {
       type = lib.types.str;
-      default = "tanner";
-      example = "tanner";
+      default = "user";
+      example = "user";
       description = "The name of the main system user";
     };
     user.config.reposPath = lib.mkOption {
