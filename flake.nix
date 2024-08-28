@@ -56,8 +56,8 @@
       pkgs = (import nixpkgs { inherit system; } );
     in
     {
-      aircrack = (import ./dev/aircrack/aircrack.nix){ inherit pkgs; };
-      qmk = (import ./dev/qmk/qmk.nix){ inherit pkgs; };
+      aircrack = (import ./aircrack/aircrack.nix){ inherit pkgs; };
+      qmk = (import ./qmk/qmk.nix){ inherit pkgs; };
     };
   };
 }
