@@ -24,12 +24,34 @@
             # Main system first installed version was 24.05
             system.stateVersion = "24.05";
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+            nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.allowUnsupportedSystem = true;
+
+            networking.networkmanager.enable = true;
+            networking.hostName = config.user.config.userName;
+
+            # Set Time and location
+            time.timeZone = "America/Los_Angeles";
+            i18n.defaultLocale = "en_US.UTF-8";
+            i18n.extraLocaleSettings = {
+              LC_ADDRESS = "en_US.UTF-8";
+              LC_IDENTIFICATION = "en_US.UTF-8";
+              LC_MEASUREMENT = "en_US.UTF-8";
+              LC_MONETARY = "en_US.UTF-8";
+              LC_NAME = "en_US.UTF-8";
+              LC_NUMERIC = "en_US.UTF-8";
+              LC_PAPER = "en_US.UTF-8";
+              LC_TELEPHONE = "en_US.UTF-8";
+              LC_TIME = "en_US.UTF-8";
+            };
           }
         )
         (
           {config, ...}:{
             imports = [./user.nix];
             config.user.config.enable = true;
+            config.user.config.envRepo = "env";
             config.user.config.userName = "lcars";
             config.user.config.reposPath = "/var/git";
             config.user.config.enableDE = true;

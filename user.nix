@@ -17,6 +17,12 @@ in
       example = "/var/git";
       description = "Dir with flat structure of relevant git repos for the system";
     };
+    user.config.envRepo = lib.mkOption {
+      type = lib.types.str;
+      default = "env";
+      example = "env-work";
+      description = "Where the repo containing the nixosConfigurations.default system config flake i.e. this repo or one consuming it";
+    };
     user.config.enableDE = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -40,43 +46,9 @@ in
   config = lib.mkIf cfg.enable {
 
     ###########################################################################
-    # High Level and general system config
-    ###########################################################################
-  
-    # DIE PULSE AUDIO DIE!!
-    hardware.pulseaudio.enable = false;
-
-    # Always want unfree packages and unsupported
-    nixpkgs.config.allowUnfree = true;
-    nixpkgs.config.allowUnsupportedSystem = true;
-
-    # I want real time in user space
-    security.rtkit.enable = true;
-
-    # By default and unless over-written turn on network manager which manages
-    # dhcp and set host name to the main user name.
-    networking.networkmanager.enable = lib.mkDefault true;
-    networking.hostName = lib.mkDefault cfg.userName;
-
-    # Set Time and location
-    time.timeZone = "America/Los_Angeles";
-    i18n.defaultLocale = "en_US.UTF-8";
-    i18n.extraLocaleSettings = {
-      LC_ADDRESS = "en_US.UTF-8";
-      LC_IDENTIFICATION = "en_US.UTF-8";
-      LC_MEASUREMENT = "en_US.UTF-8";
-      LC_MONETARY = "en_US.UTF-8";
-      LC_NAME = "en_US.UTF-8";
-      LC_NUMERIC = "en_US.UTF-8";
-      LC_PAPER = "en_US.UTF-8";
-      LC_TELEPHONE = "en_US.UTF-8";
-      LC_TIME = "en_US.UTF-8";
-    };
-
-    ###########################################################################
     # Tmp Files Rules.
     #
-    # Also some systemd timers.
+    # Systemd timers.
     ###########################################################################
 
     systemd.tmpfiles.rules = [
@@ -132,6 +104,8 @@ in
       nmap
       jq
       git
+      pev
+      bintools
     ]
       ++ (if cfg.enableDE then [vscode] else [] )
       ++ (if cfg.enableDE then [prusa-slicer] else [] )
@@ -260,6 +234,9 @@ in
     #############################################################################
     # DE specific stuff
     #############################################################################
+
+    security.rtkit.enable = true;
+    hardware.pulseaudio.enable = false;
 
     # xserver is bad name, this is a GUI catch all attr
     services.xserver = if cfg.enableDE then {
