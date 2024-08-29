@@ -45,40 +45,6 @@ in
 
   config = lib.mkIf cfg.enable {
 
-    ###########################################################################
-    # Tmp Files Rules.
-    #
-    # Systemd timers.
-    ###########################################################################
-
-    systemd.tmpfiles.rules = [
-      "d ${cfg.reposPath} - ${cfg.userName} users -"
-    ]
-    ++(if cfg.enableEcryptfs then [
-      "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users 7d"
-    ] else []);
-
-    systemd.timers."ecryptfsBakAgent" = lib.mkIf cfg.enableEcryptfs {
-    wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnBootSec = "5m";
-        OnUnitActiveSec = "1d";
-        Unit = "ecryptfsBakAgent.service";
-      };
-    };
-
-    systemd.services."ecryptfsBakAgent" = {
-      path = with pkgs; [ gnutar gzip ];
-      script = ''
-        /run/current-system/sw/bin/rm -rf /home/${cfg.userName}/.cache/*
-        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz /home/.ecryptfs/${cfg.userName}/
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        User = "root";
-      };
-    };
-
     #############################################################################
     # Main System User
     #############################################################################
@@ -104,8 +70,11 @@ in
       nmap
       jq
       git
+
+      # can be wrapped up in a bin analysis module
       pev
       bintools
+      nix-derivation
     ]
       ++ (if cfg.enableDE then [vscode] else [] )
       ++ (if cfg.enableDE then [prusa-slicer] else [] )
@@ -113,6 +82,40 @@ in
       ++ (if cfg.enableDE then [libreoffice] else [] )
       ++ (if cfg.enableDE then [firefox] else [] )
       ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
+
+    ###########################################################################
+    # Tmp Files Rules.
+    #
+    # Systemd timers.
+    ###########################################################################
+
+    systemd.tmpfiles.rules = [
+      "d ${cfg.reposPath} - ${cfg.userName} users -"
+    ]
+    ++(if cfg.enableEcryptfs then [
+      "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users 7d"
+    ] else []);
+
+    systemd.timers."ecryptfsBakAgent" = lib.mkIf cfg.enableEcryptfs {
+    wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "5m";
+        OnUnitActiveSec = "1d";
+        Unit = "ecryptfsBakAgent.service";
+      };
+    };
+
+    systemd.services."ecryptfsBakAgent" = lib.mkIf cfg.enableEcryptfs {
+      path = with pkgs; [ gnutar gzip ];
+      script = ''
+        /run/current-system/sw/bin/rm -rf /home/${cfg.userName}/.cache/*
+        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz /home/.ecryptfs/${cfg.userName}/
+      '';
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+      };
+    };
 
     #############################################################################
     # Tmux Conf
@@ -130,9 +133,10 @@ in
         # 1 index windows
         set -g base-index 1
 
-        # split panes using | and -
-        bind / split-window -h
-        bind - split-window -v
+        # split panes using | and -, new windo with c
+        bind / split-window -h  -c "#{pane_current_path}"
+        bind - split-window -v  -c "#{pane_current_path}"
+        bind c new-window -c "#{pane_current_path}"
         unbind '"'
         unbind %
 
@@ -187,14 +191,10 @@ in
       l = "ls -CF";
       gs = "git status";
       gdpush = "git add -u && git commit -m \"AUTO COMMIT\" && git push";
-      user_confirm=''
-      read -p \"Continue? (Y/N): \" confirm && 
-      [[ \$confirm == [yY] || \$confirm == [yY][eE][sS] ]] || 
-      return
-      '';
+      v = "tmux split-window -h ";
       nix_rebuild = ''
         pushd . > /dev/null ;
-        cd ${cfg.reposPath}/env ;
+        cd ${cfg.reposPath}/${cfg.envRepo} ;
         sudo nixos-rebuild --flake .#default switch ;
         popd > /dev/null
       '';
@@ -207,7 +207,7 @@ in
           echo   
         done
         popd > /dev/null
-      '';
+      ''; 
     };
 
     programs.bash.promptInit = ''
