@@ -27,7 +27,7 @@ in
       type = lib.types.bool;
       default = false;
       example = "true";
-      description = "Whether to enable a GNOME DE";
+      description = "Whether to enable a GNOME DE w/ vs code and ";
     };
     user.config.enableEcryptfs = lib.mkOption {
       type = lib.types.bool;
@@ -71,7 +71,7 @@ in
       jq
       git
 
-      # can be wrapped up in a bin analysis module
+      # can be wrapped up in a bin analysis module??
       pev
       bintools
       nix-derivation
@@ -182,16 +182,41 @@ in
     };
 
     #############################################################################
-    # Bash Settings
+    # Bash and Environment Settings
     #############################################################################
+    environment.variables.EDITOR = "vim";
+
     users.defaultUserShell = pkgs.bash;
+    programs.bash.enableCompletion = true;
+    programs.bash.enableLsColors = true;
     programs.bash.shellAliases = {
-      ll = "ls -al";
-      la = "ls -A";
+      
+      # One letter commands
       l = "ls -CF";
+      v = "tmux split-window -h vim";
+      g = "grep";
+      e = "exit";
+
+      # Two letter commands
+      ll = "ls -la";
       gs = "git status";
+      ts = "tmux copy-mode";             # T SEARCH
+      tw = "tmux new-window";            # T WINDOW
+      tp = "tmux split-window -h";       # T PANE
+      tj = "tmux last-pane";             # T JUMP
+      t0 = "tmux select-window -t 0";
+      t1 = "tmux select-window -t 1";
+      t2 = "tmux select-window -t 2";
+      t3 = "tmux select-window -t 3";
+      t4 = "tmux select-window -t 4";
+      t5 = "tmux select-window -t 5";
+      t6 = "tmux select-window -t 6";
+      t7 = "tmux select-window -t 7";
+      t8 = "tmux select-window -t 8";
+      t9 = "tmux select-window -t 9";
+      
+      # Use these sparingly
       gdpush = "git add -u && git commit -m \"AUTO COMMIT\" && git push";
-      v = "tmux split-window -h ";
       nix_rebuild = ''
         pushd . > /dev/null ;
         cd ${cfg.reposPath}/${cfg.envRepo} ;
@@ -207,7 +232,11 @@ in
           echo   
         done
         popd > /dev/null
+      '';
+      closure = ''
+        nix path-info --recursive --size --closure-size --human-readable
       ''; 
+     
     };
 
     programs.bash.promptInit = ''
@@ -239,7 +268,7 @@ in
     hardware.pulseaudio.enable = false;
 
     # xserver is bad name, this is a GUI catch all attr
-    services.xserver = if cfg.enableDE then {
+    services.xserver = lib.mkIf cfg.enableDE{
       enable = true;
       xkb.layout = "us";
       displayManager = {
@@ -248,10 +277,10 @@ in
       desktopManager = {
         gnome.enable = true;
       };
-    } else {};
+    };
 
     
-    services.pipewire = {
+    services.pipewire = lib.mkIf cfg.enableDE {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
@@ -262,6 +291,6 @@ in
     # Encrypted Home Drive
     #############################################################################
     security.pam.enableEcryptfs = cfg.enableEcryptfs;
-    boot.kernelModules = if cfg.enableEcryptfs then ["ecryptfs"] else [];
+    boot.kernelModules = lib.mkIf cfg.enableEcryptfs ["ecryptfs"];
   };
 }
