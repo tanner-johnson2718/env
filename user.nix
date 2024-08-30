@@ -143,9 +143,6 @@ in
         # Allow the arrow key to be used immediately after changing windows
         set-option -g repeat-time 0
 
-        # dont confirm on kill pane
-        bind-key x kill-pane
-
         # Change prefix key
         unbind C-b
         set-option -g prefix C-Space
@@ -234,7 +231,7 @@ in
         popd > /dev/null
       '';
       closure = ''
-        nix path-info --recursive --size --closure-size --human-readable
+        nix path-info --recursive
       ''; 
      
     };
