@@ -41,6 +41,12 @@ in
       example = "/var/ecryptfsBak";
       description = "Path to where encrypted home drive back ups go";
     };
+    user.config.tmuxExtraConf = lib.mkOption {
+      type = lib.types.string;
+      default = "";
+      example = "set-window-option -g window-status-current-style bg='#7c3e8e'";
+      description = "Extra tmux conf you want to add";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -122,55 +128,26 @@ in
     #############################################################################
     programs.tmux = {
       enable = true;
+      newSession = true;
+      withUtempter = true;
+      terminal = "screen-256color";
+      shortcut = "Space";
+      secureSocket = true;
+      reverseSplit = false;
+      resizeAmount = 5;
+      plugins = [];
+      keyMode = "vi";
+      historyLimit = 5000;
+      extraConfigBeforePlugins = "";
+      escapeTime = 500;
+      customPaneNavigationAndResize = false;
+      clock24 = true;
+      baseIndex = 1;
+      aggressiveResize = false;
       extraConfig = ''
-        # Tmux color settings
-        set -g default-terminal "screen-256color"
-        set-window-option -g window-status-current-style bg="#7c3e8e"
-
-        # status bar
         set-option -g status-right "#(whoami)@#(hostname)"
-
-        # 1 index windows
-        set -g base-index 1
-
-        # split panes using | and -, new windo with c
-        bind / split-window -h  -c "#{pane_current_path}"
-        bind - split-window -v  -c "#{pane_current_path}"
-        bind c new-window -c "#{pane_current_path}"
-        unbind '"'
-        unbind %
-
-        # Allow the arrow key to be used immediately after changing windows
-        set-option -g repeat-time 0
-
-        # Change prefix key
-        unbind C-b
-        set-option -g prefix C-Space
-        bind-key C-Space send-prefix
-
-        # Makes space hightlight in copy mode, make space enter copy mode, and enter to
-        # copy highlighted
-        setw -g mode-keys vi
-        unbind Space
-        bind Space copy-mode
+        set-window-option -g window-status-current-style bg="#7c3e8e"
         bind-key -T copy-mode-vi c send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
-
-        # Window Changes
-        bind-key -T prefix NPage next-window
-        bind-key -T prefix PPage previous-window
-
-        # Rebind pane size chnage to control wasd
-        unbind C-Right
-        unbind C-Left
-        unbind C-Up
-        unbind C-Down
-        bind-key -r -T prefix C-d resize-pane -R
-        bind-key -r -T prefix C-s resize-pane -D
-        bind-key -r -T prefix C-a resize-pane -L
-        bind-key -r -T prefix C-w resize-pane -U
-
-        # Paragraph and word Jumps 
-        # (Add a new line at begining of PS1 to make thep aragraph jumps more useful)
         bind-key -T copy-mode-vi C-Up send-keys -X previous-paragraph
         bind-key -T copy-mode-vi C-Down send-keys -X next-paragraph
         bind-key -T copy-mode-vi C-Left send-keys -X previous-word
@@ -197,10 +174,11 @@ in
       # Two letter commands
       ll = "ls -la";
       gs = "git status";
-      ts = "tmux copy-mode";             # T SEARCH
-      tw = "tmux new-window";            # T WINDOW
-      tp = "tmux split-window -h";       # T PANE
-      tj = "tmux last-pane";             # T JUMP
+      ts = "tmux copy-mode";            # T SEARCH
+      tw = "tmux new-window";           # T WINDOW
+      tp = "tmux split-window -h";      # T PANE
+      tj = "tmux last-pane";            # T JUMP
+      tl = "tmux rename-window";        # T LABEL
       t0 = "tmux select-window -t 0";
       t1 = "tmux select-window -t 1";
       t2 = "tmux select-window -t 2";
@@ -230,9 +208,6 @@ in
         done
         popd > /dev/null
       '';
-      closure = ''
-        nix path-info --recursive
-      ''; 
      
     };
 
