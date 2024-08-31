@@ -42,10 +42,16 @@ in
       description = "Path to where encrypted home drive back ups go";
     };
     user.config.tmuxExtraConf = lib.mkOption {
-      type = lib.types.string;
+      type = lib.types.str;
       default = "";
       example = "set-window-option -g window-status-current-style bg='#7c3e8e'";
       description = "Extra tmux conf you want to add";
+    };
+    user.config.bashExtra = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      example = "alias short='cut + cfg.bashExtra'";
+      description = "Extra init shell hook you want to add";
     };
   };
 
@@ -76,8 +82,6 @@ in
       nmap
       jq
       git
-
-      # can be wrapped up in a bin analysis module??
       pev
       bintools
       nix-derivation
@@ -85,7 +89,6 @@ in
       ++ (if cfg.enableDE then [vscode] else [] )
       ++ (if cfg.enableDE then [prusa-slicer] else [] )
       ++ (if cfg.enableDE then [rpi-imager] else [] )
-      ++ (if cfg.enableDE then [libreoffice] else [] )
       ++ (if cfg.enableDE then [firefox] else [] )
       ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
 
@@ -152,6 +155,8 @@ in
         bind-key -T copy-mode-vi C-Down send-keys -X next-paragraph
         bind-key -T copy-mode-vi C-Left send-keys -X previous-word
         bind-key -T copy-mode-vi C-Right send-keys -X next-word-end
+        set -s command-alias[0] tj='last-pane'
+        set -s command-alias[1] tp='split-window -h'
       '';
     };
 
@@ -163,53 +168,6 @@ in
     users.defaultUserShell = pkgs.bash;
     programs.bash.enableCompletion = true;
     programs.bash.enableLsColors = true;
-    programs.bash.shellAliases = {
-      
-      # One letter commands
-      l = "ls -CF";
-      v = "tmux split-window -h vim";
-      g = "grep";
-      e = "exit";
-
-      # Two letter commands
-      ll = "ls -la";
-      gs = "git status";
-      ts = "tmux copy-mode";            # T SEARCH
-      tw = "tmux new-window";           # T WINDOW
-      tp = "tmux split-window -h";      # T PANE
-      tj = "tmux last-pane";            # T JUMP
-      tl = "tmux rename-window";        # T LABEL
-      t0 = "tmux select-window -t 0";
-      t1 = "tmux select-window -t 1";
-      t2 = "tmux select-window -t 2";
-      t3 = "tmux select-window -t 3";
-      t4 = "tmux select-window -t 4";
-      t5 = "tmux select-window -t 5";
-      t6 = "tmux select-window -t 6";
-      t7 = "tmux select-window -t 7";
-      t8 = "tmux select-window -t 8";
-      t9 = "tmux select-window -t 9";
-      
-      # Use these sparingly
-      gdpush = "git add -u && git commit -m \"AUTO COMMIT\" && git push";
-      nix_rebuild = ''
-        pushd . > /dev/null ;
-        cd ${cfg.reposPath}/${cfg.envRepo} ;
-        sudo nixos-rebuild --flake .#default switch ;
-        popd > /dev/null
-      '';
-      statall=''
-        pushd . > /dev/null
-        for d in ${cfg.reposPath}/* ; do
-          echo $d
-          cd $d
-          git status --porcelain
-          echo   
-        done
-        popd > /dev/null
-      '';
-     
-    };
 
     programs.bash.promptInit = ''
       export GIT_PS1_SHOWCOLORHINTS=true
@@ -230,7 +188,78 @@ in
       if [ -z $TMUX ];then
         tmux attach
       fi
-    '';
+      
+      function gdpush {
+        git add -u
+        git commit -m "AUTO COMMIT"
+        git push
+      }
+      export gdpush
+      
+      function nix_rebuild {
+        pushd . > /dev/null
+        cd ${cfg.reposPath}/${cfg.envRepo}
+        sudo nixos-rebuild --flake .#default switch
+        popd > /dev/null
+      }
+      export nix_build
+      
+      function statall {
+        pushd . > /dev/null
+        for d in ${cfg.reposPath}/* ; do
+          echo $d
+          cd $d
+          git status --porcelain
+          echo   
+        done
+        popd > /dev/null
+      }
+      export statall
+
+      function tpane {
+        _n=$(tmux list-panes | wc -l)
+        if [ $_n = "1" ]; then 
+          tmux split-window -h $1
+        else
+          return
+        fi
+      }
+      export tpane
+
+      function tjump {
+        _n=$(tmux list-panes | wc -l)
+        if [ $_n = "1" ]; then
+          return 0;
+        elif [ $_n = "2" ]; then
+          tmux last-pane
+        fi
+      }
+      export tjump
+    '' + cfg.bashExtra;
+
+    programs.bash.shellAliases = {
+      # Use these for fast navigation of the terminal
+      l = "ls -CF";
+      g = "grep";
+      e = "exit";
+      ll = "ls -la";
+      gs = "git status";
+      ts = "tmux copy-mode";            # T SEARCH
+      tw = "tmux new-window";           # T WINDOW
+      tp = "tpane";                     # T PANE
+      tj = "tjump";                     # T JUMP
+      tl = "tmux rename-window";        # T LABEL
+      t0 = "tmux select-window -t 0";
+      t1 = "tmux select-window -t 1";
+      t2 = "tmux select-window -t 2";
+      t3 = "tmux select-window -t 3";
+      t4 = "tmux select-window -t 4";
+      t5 = "tmux select-window -t 5";
+      t6 = "tmux select-window -t 6";
+      t7 = "tmux select-window -t 7";
+      t8 = "tmux select-window -t 8";
+      t9 = "tmux select-window -t 9"; 
+    };
 
     #############################################################################
     # DE specific stuff
@@ -250,7 +279,6 @@ in
         gnome.enable = true;
       };
     };
-
     
     services.pipewire = lib.mkIf cfg.enableDE {
       enable = true;
