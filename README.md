@@ -23,10 +23,10 @@ The Policy of One is very general and is the primary sentiment I will use when b
     * `env` or `env_<system_name>` with be the env repo name
         * `flake.nix`
         * `flake.lock`
-        * `README.md`
+        * `README.md` specific policy this system adheres too.
         * `mod_1`
             * `mod1.nix`
-            * `README.md`
+            * `README.md` specific policy this modules adheres too.
             * .. Arbitrary Tree
         * `mod_N`
             * ...'
@@ -46,3 +46,7 @@ The Policy of One is very general and is the primary sentiment I will use when b
 
 # The Policy of Hub and Spoke
 
+We have the Policy of One for guidance on how to set up a single system and the Policy of Modularity for structure and to give a mechanism to reuse sub system configuration between systems. 
+
+
+... TODO finish me ...
