@@ -28,6 +28,7 @@
         config.user.config.enableEcryptfs = true;
         config.user.config.ecryptfsBakPath = "/var/ecryptfsBak";
 
+        config.term.config.enable = true;
         config.term.config.tmuxExtraConf = "";
         config.term.config.bashExtra = "";
 

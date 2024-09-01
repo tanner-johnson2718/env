@@ -107,7 +107,7 @@ in
       
       function nix_rebuild {
         pushd . > /dev/null
-        cd ${cfg.reposPath}/${cfg.envRepo}
+        cd ${config.user.config.reposPath}/${config.user.config.envRepo}
         sudo nixos-rebuild --flake .#default switch
         popd > /dev/null
       }
@@ -115,7 +115,7 @@ in
       
       function statall {
         pushd . > /dev/null
-        for d in ${cfg.reposPath}/* ; do
+        for d in ${config.user.config.reposPath}/* ; do
           echo $d
           cd $d
           git status --porcelain
