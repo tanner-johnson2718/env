@@ -13,7 +13,7 @@
   in {
     nixosConfigurations.default = nixpkgs.lib.nixosSystem  {
       inherit system;
-      modules = [ ( {config, lib, modulesPath,  ...}:{
+      modules = [ ( {config, lib, modulesPath, ...}:{
         imports = [
           ./user.nix
           ./term.nix
