@@ -218,9 +218,10 @@ in
         g = "grep";
         e = "exit";
         ll = "ls -la";
-        lf = "declare -F";  
+        lf = "declare -F";
+        lc = "complete";  
         gs = "git status";
-        ts = "tmux copy-mode";            # T SEARCH
+        ts = "tmux copy-mode";            # T SCROLL
         tw = "tmux new-window";           # T WINDOW
         tp = "tpane";                     # T PANE
         tj = "tjump";                     # T JUMP

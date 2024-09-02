@@ -63,6 +63,7 @@
 
     nixosModules.user = (import ./user.nix);
     nixosModules.term = (import ./term.nix);
+    nixosModules.argp = (import ./argp.nix);
 
    ###########################################################################
     # Nix Shells to export developer environments to other system.

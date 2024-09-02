@@ -73,11 +73,13 @@ in
     # System Pkgs +  Additional system packages based on flags
     ###########################################################################
     environment.systemPackages = with pkgs; []
-      ++ (if cfg.enableDE then [vscode] else [] )
-      ++ (if cfg.enableDE then [prusa-slicer] else [] )
-      ++ (if cfg.enableDE then [rpi-imager] else [] )
-      ++ (if cfg.enableDE then [firefox] else [] )
-      ++ (if cfg.enableDE then [nil] else [])
+      ++ (if cfg.enableDE then [
+        vscode
+        prusa-slicer
+        rpi-imager
+        firefox
+        nil 
+      ] else [] )
       ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
 
     ###########################################################################
