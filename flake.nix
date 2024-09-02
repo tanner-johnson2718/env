@@ -1,23 +1,25 @@
 {
   description = ''
     Configuration for my main system. Export parts of my main system in the 
-    form of configurable modules and dev shells. This repo and this flake are
-    for my main personal laptop and will hopefully contain ALL configuration
-    required to recreate its state.
+    form of configurable modules and dev shells.
   '';
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
 
-  outputs = { self, nixpkgs, ... }@inputs:
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+  };
+
+  outputs = { self, nixpkgs, ... }:
   let
     system = "x86_64-linux";
+    pkgs = (import nixpkgs { inherit system; } );
   in {
     nixosConfigurations.default = nixpkgs.lib.nixosSystem  {
       inherit system;
-      modules = [ ( {config, lib, modulesPath, ...}:{
+      modules = [ ( {config, lib, modulesPath,  ...}:{
         imports = [
           ./user.nix
           ./term.nix
-          ./hw/hp_envy_15t.nix 
+          ./hw/hp_envy_15t.nix
         ];
 
         config.user.config.enable = true;
@@ -31,6 +33,7 @@
         config.term.config.enable = true;
         config.term.config.tmuxExtraConf = "";
         config.term.config.bashExtra = "";
+        # config.term.config.extraTerminalPkgs = [];
 
         config = {
           # Main system first installed version was 24.05
@@ -44,6 +47,12 @@
           networking.networkmanager.enable = true;
           networking.hostName = config.user.config.userName;
           networking.useDHCP = lib.mkDefault true;
+
+          fonts.packages = with (import nixpkgs { inherit system; } ); [cascadia-code];
+          fonts.fontconfig.enable = true;
+          fonts.fontconfig.defaultFonts.monospace = ["Cascadia Mono"];
+          fonts.fontconfig.defaultFonts.serif = ["Cascadia Mono"];
+          fonts.fontconfig.defaultFonts.sansSerif = ["Cascadia Mono"];
         };
       })];
     };
@@ -58,12 +67,6 @@
    ###########################################################################
     # Nix Shells to export developer environments to other system.
    ###########################################################################
-    devShells.${system} =
-    let
-      pkgs = (import nixpkgs { inherit system; } );
-    in
-    {
-      qmk = (import ./qmk/qmk.nix){ inherit pkgs; };
-    };
+    devShells.${system} = { qmk = (import ./qmk/qmk.nix){ inherit pkgs; }; };
   };
 }

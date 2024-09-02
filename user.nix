@@ -1,10 +1,10 @@
-{config, pkgs, inputs, lib, ...}:
+{config, pkgs, lib, ...}:
 let
   cfg = config.user.config;
 in
 {
   options = {
-    user.config.enable = lib.mkEnableOption "Enable User Module";
+    user.config.enable = lib.mkEnableOption "Enable Module";
     user.config.userName = lib.mkOption {
       type = lib.types.str;
       default = "user";
@@ -77,6 +77,7 @@ in
       ++ (if cfg.enableDE then [prusa-slicer] else [] )
       ++ (if cfg.enableDE then [rpi-imager] else [] )
       ++ (if cfg.enableDE then [firefox] else [] )
+      ++ (if cfg.enableDE then [nil] else [])
       ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
 
     ###########################################################################
@@ -96,7 +97,6 @@ in
     wantedBy = [ "timers.target" ];
       timerConfig = {
         OnBootSec = "5m";
-        OnUnitActiveSec = "1d";
         Unit = "ecryptfsBakAgent.service";
       };
     };
