@@ -3,6 +3,8 @@ let
   cfg = config.user.config;
 in
 {
+  imports = [ ./term.nix ];
+
   options = {
     user.config.enable = lib.mkEnableOption "Enable Module";
     user.config.userName = lib.mkOption {
@@ -129,9 +131,7 @@ in
       displayManager = {
         gdm.enable = true;
       };
-      desktopManager = {
-        gnome.enable = true;
-      };
+      desktopManager.gnome.enable = true;
     };
     
     services.pipewire = lib.mkIf cfg.enableDE {

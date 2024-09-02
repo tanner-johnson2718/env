@@ -88,6 +88,17 @@ in
         bind-key -T copy-mode-vi C-Right send-keys -X next-word-end
         set -s command-alias[0] tj='last-pane'
         set -s command-alias[1] tp='split-window -h'
+        set -s command-alias[2] tw='select-window'
+        set -s command-alias[3] t0='select-window- t 0'
+        set -s command-alias[4] t1='select-window- t 1'
+        set -s command-alias[5] t2='select-window- t 2'
+        set -s command-alias[6] t3='select-window- t 3'
+        set -s command-alias[7] t4='select-window- t 4'
+        set -s command-alias[8] t5='select-window- t 5'
+        set -s command-alias[9] t6='select-window- t 6'
+        set -s command-alias[10] t7='select-window -t 7'
+        set -s command-alias[11] t8='select-window -t 8'
+        set -s command-alias[12] t9='select-window -t 9'
         set -g mouse on
         set -g renumber-windows on
       '' + cfg.tmuxExtraConf;
@@ -129,66 +140,15 @@ in
         }
         export gdpush
 
-        function statall {
-          pushd . > /dev/null
-          for d in ${config.user.config.reposPath}/* ; do
-            echo $d
-            cd $d
-            git status --porcelain
-            echo   
-          done
-          popd > /dev/null
-        }
-        export statall
-        
-        function nix_rebuild {
-          pushd . > /dev/null
-          cd ${config.user.config.reposPath}/${config.user.config.envRepo}
-          sudo nixos-rebuild --flake .#default switch
-          popd > /dev/null
-        }
-        export nix_build
-  
-        function nix_nuke {
-          sudo nix-collect-garabage -d
-        }
-        export nix_nuke
-
         function nix_closure {
           if [ $# != 1 ]; then 
             echo "usage nix_closure <store dir>"
             return 0;
           fi
-
           nix path-info --recursive --closure-size --human-readable $1
           return $?
         }
         export nix_closure
-
-        function nix_flake_update {
-          pushd . > /dev/null
-  
-          _path=${config.user.config.reposPath}/${config.user.config.envRepo}
-          echo "Updating env flake at $_path"
-          cd $_path
-          nix flake update
-          _rev=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.rev]" | g -oe "[a-z0-9]*")
-          _owner=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.owner]" | g -oe "[a-zA-Z0-9.-]*")
-          _repo=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.repo]" | g -oe "[a-zA-Z0-9.-]*")
-
-          echo "Updated to rev=$_rev ... Updating local nixpkgs"
-          cd ..
-          if ! [ -d nixpkgs ]; then
-            git clone https://github.com/$_owner/$_repo.git
-          fi
-
-          cd nixpkgs
-          git pull
-          git checkout $_rev
-
-          popd > /dev/null
-        }
-        export nix_flake_update
 
         function tpane {
           _n=$(tmux list-panes | wc -l)
@@ -209,7 +169,62 @@ in
           fi
         }
         export tjump
-      '' + cfg.bashExtra;
+      '' 
+      + cfg.bashExtra
+      +(if true then ''
+        function statall {
+          pushd . > /dev/null
+          for d in ${config.user.config.reposPath}/* ; do
+            echo $d
+            cd $d
+            git status --porcelain
+            echo   
+          done
+          popd > /dev/null
+        }
+        export statall
+        
+        function nix_rebuild {
+          if [ $# != 1]; then
+            return 0;
+          fi
+          pushd . > /dev/null
+          cd ${config.user.config.reposPath}/${config.user.config.envRepo}
+          sudo nixos-rebuild --flake .#$1 switch
+          popd > /dev/null
+        }
+        export nix_build
+  
+        function nix_nuke {
+          sudo nix-collect-garabage -d
+        }
+        export nix_nuke
+
+                function nix_flake_update {
+          pushd . > /dev/null
+  
+          _path=${config.user.config.reposPath}/${config.user.config.reposPath}
+          echo "Updating env flake at $_path"
+          cd $_path
+          nix flake update
+          _rev=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.rev]" | g -oe "[a-z0-9]*")
+          _owner=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.owner]" | g -oe "[a-zA-Z0-9.-]*")
+          _repo=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.repo]" | g -oe "[a-zA-Z0-9.-]*")
+
+          echo "Updated to rev=$_rev ... Updating local nixpkgs"
+          cd ..
+          if ! [ -d nixpkgs ]; then
+            git clone https://github.com/$_owner/$_repo.git
+          fi
+
+          cd nixpkgs
+          git pull
+          git checkout $_rev
+
+          popd > /dev/null
+        }
+        export nix_flake_update
+      '' else "");
 
       shellAliases = {
         # Use these for fast navigation of the terminal
@@ -218,8 +233,9 @@ in
         g = "grep";
         e = "exit";
         ll = "ls -la";
-        lf = "declare -F";
-        lc = "complete";  
+        lf = "declare -F";               # LIST FUNCTIONS 
+        lF = "declare";                  # REALLY LIST FUNCTIONS
+        lc = "complete";                 # LIST COMPLETIONS  
         gs = "git status";
         ts = "tmux copy-mode";            # T SCROLL
         tw = "tmux new-window";           # T WINDOW
