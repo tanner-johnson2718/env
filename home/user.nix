@@ -3,8 +3,6 @@ let
   cfg = config.user.config;
 in
 {
-  imports = [ ./term.nix ];
-
   options = {
     user.config.enable = lib.mkEnableOption "Enable Module";
     user.config.userName = lib.mkOption {
@@ -25,12 +23,6 @@ in
       example = "env-work";
       description = "Where the repo containing the nixosConfigurations.default system config flake i.e. this repo or one consuming it";
     };
-    user.config.enableDE = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      example = "true";
-      description = "Whether to enable a GNOME DE w/ vs code and ";
-    };
     user.config.enableEcryptfs = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -43,9 +35,27 @@ in
       example = "/var/ecryptfsBak";
       description = "Path to where encrypted home drive back ups go";
     };
+    user.config.extraFontPkgs = lib.mkOption {
+      type = lib.types.listOf lib.types.anything;
+      default = [pkgs.cascadia-code];
+      example = "[pkgs.cascadia-code]";
+      description = "Extra Font Packages";
+    };
+    user.config.defaultFont = lib.mkOption {
+      type = lib.types.str;
+      default = "Cascadia Mono";
+      example = "Cascadia Mono";
+      description = "Default Font";
+    };
   };
 
   config = lib.mkIf cfg.enable {
+
+    users.users.${cfg.userName} = {
+      isNormalUser = true;
+      description = "Main System User";
+      extraGroups = [ "networkmanager" "wheel" ];
+    };
     
     # Set Time and location
     time.timeZone = "America/Los_Angeles";
@@ -62,26 +72,13 @@ in
       LC_TIME = "en_US.UTF-8";
     };
 
-    #############################################################################
-    # Main System User
-    #############################################################################
-    users.users.${cfg.userName} = {
-      isNormalUser = true;
-      description = "Main System User";
-      extraGroups = [ "networkmanager" "wheel" ];
-    };
+    fonts.packages = cfg.extraFontPkgs;
+    fonts.fontconfig.enable = true;
+    fonts.fontconfig.defaultFonts.monospace = [cfg.defaultFont];
+    fonts.fontconfig.defaultFonts.serif = [cfg.defaultFont];
+    fonts.fontconfig.defaultFonts.sansSerif = [cfg.defaultFont];
 
-    ###########################################################################
-    # System Pkgs +  Additional system packages based on flags
-    ###########################################################################
     environment.systemPackages = with pkgs; []
-      ++ (if cfg.enableDE then [
-        vscode
-        prusa-slicer
-        rpi-imager
-        firefox
-        nil 
-      ] else [] )
       ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
 
     ###########################################################################
@@ -115,30 +112,6 @@ in
         Type = "oneshot";
         User = "root";
       };
-    };
-
-    #############################################################################
-    # DE specific stuff
-    #############################################################################
-
-    security.rtkit.enable = true;
-    hardware.pulseaudio.enable = false;
-
-    # xserver is bad name, this is a GUI catch all attr
-    services.xserver = lib.mkIf cfg.enableDE{
-      enable = true;
-      xkb.layout = "us";
-      displayManager = {
-        gdm.enable = true;
-      };
-      desktopManager.gnome.enable = true;
-    };
-    
-    services.pipewire = lib.mkIf cfg.enableDE {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
     };
 
     #############################################################################

@@ -42,12 +42,7 @@ in
       nmap
       jq
       git
-      pev
-      bintools
       nix-derivation
-      aircrack-ng 
-      tcpdump 
-      wireshark 
     ] ++ cfg.extraTerminalPkgs;
 
     console = {
@@ -99,6 +94,7 @@ in
         set -s command-alias[10] t7='select-window -t 7'
         set -s command-alias[11] t8='select-window -t 8'
         set -s command-alias[12] t9='select-window -t 9'
+        set -s command-alias[13] ts='copy-mode'
         set -g mouse on
         set -g renumber-windows on
       '' + cfg.tmuxExtraConf;

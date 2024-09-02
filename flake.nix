@@ -12,6 +12,12 @@
   outputs = { self, nixpkgs, raspberry-pi-nix, ... }:
   let
     inherit (nixpkgs.lib) nixosSystem;
+    common = {...}:{
+      system.stateVersion = "24.05";
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+      nixpkgs.config.allowUnfree = true;
+      nixpkgs.config.allowUnsupportedSystem = true;
+    };
   in {
 
   ###########################################################################
@@ -24,22 +30,43 @@
     in 
     nixosSystem  {
       inherit system;
-      modules = [ ( {config, lib, modulesPath,  ...}@args:{
+      modules = [ ( {config, lib, modulesPath, pkgs,  ...}:{
         imports = [
-          ./user.nix 
+          common
+          ./home
           ./hp_envy_15t.nix
-          (import ./common.nix ( args // {inherit system;} ) )
         ];
 
         config.user.config.enable = true;
         config.user.config.userName = "lcars";
-        config.user.config.enableDE = true;
+        config.user.config.reposPath = "/var/git";
+        config.user.config.envRepo = "env";
         config.user.config.enableEcryptfs = true;
         config.user.config.ecryptfsBakPath = "/var/ecryptfsBak";
+        
+
         config.term.config.enable = true;
+        config.term.config.extraTerminalPkgs = with pkgs;
+        [
+          pev
+          bintools
+          aircrack-ng 
+          tcpdump 
+        ];
+
+        config.gnome.config.enable = true;
+        config.gnome.config.extraDEPkgs =
+        with pkgs;
+        [
+          vscode
+          nil
+          prusa-slicer
+          rpi-imager
+          wireshark
+        ];
 
         config = {
-          
+          nixpkgs.hostPlatform = "${system}";
           boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
           
           networking = {
@@ -47,13 +74,7 @@
             networkmanager.enable = true;
             hostName = config.user.config.userName;
             useDHCP = lib.mkDefault true;
-          };
-
-          fonts.packages = with (import nixpkgs { inherit system; } ); [cascadia-code];
-          fonts.fontconfig.enable = true;
-          fonts.fontconfig.defaultFonts.monospace = ["Cascadia Mono"];
-          fonts.fontconfig.defaultFonts.serif = ["Cascadia Mono"];
-          fonts.fontconfig.defaultFonts.sansSerif = ["Cascadia Mono"];
+          };  
         };
       })];
     };
@@ -69,20 +90,22 @@
     in
     nixosSystem {
       inherit system;
-      modules = [ ( {config, lib, modulesPath,  ...}@args:{
-        imports = [
-          raspberry-pi-nix.nixosModules.raspberry-pi 
-          ./user.nix  
-          (import ./common ( args // {inherit system;} ) )
+      modules = [ ( {config, lib, modulesPath,  ...}:{
+        imports = [ 
+          common
+          ./home
         ];
 
         config.user.config.enable = true;
         config.user.config.userName = "garagePi";
+        config.user.config.reposPath = "/var/git";
+        config.user.config.envRepo = "env";
+
         config.term.config.enable = true;
 
         config = {
+          nixpkgs.hostPlatform = "${system}";
           raspberry-pi-nix.board = "bcm2711";
-          users.users.${config.user.config.userName}.initialPassword = "${config.user.config.userName}";
           networking = {
             hostName = config.user.config.userName;
             wireless.networks.Nan.psk = "password";
@@ -100,8 +123,7 @@
     # Nix Modules to export sys config other systems
    ###########################################################################
 
-    nixosModules.user = (import ./user.nix);
-    nixosModules.term = (import ./term.nix);
+    nixosModules.home = (import ./home);
     nixosModules.argp = (import ./argp.nix);
 
    ###########################################################################
