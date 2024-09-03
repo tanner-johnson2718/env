@@ -30,12 +30,6 @@ in
       example = "true";
       description = "Enable support for CURRENTLY encrypted home drive";
     };
-    user.config.ecryptfsBakPath = lib.mkOption {
-      type = lib.types.path;
-      default = "/var/ecryptfsBak";
-      example = "/var/ecryptfsBak";
-      description = "Path to where encrypted home drive back ups go";
-    };
     user.config.extraFontPkgs = lib.mkOption {
       type = lib.types.listOf lib.types.anything;
       default = [pkgs.cascadia-code];
@@ -105,42 +99,6 @@ in
       };
     };
 
-    ###########################################################################
-    # Tmp Files Rules.
-    #
-    # Systemd timers.
-    ###########################################################################
-
-    systemd.tmpfiles.rules = [
-      "d ${cfg.reposPath} - ${cfg.userName} users -"
-    ]
-    ++(if cfg.enableEcryptfs then [
-      "d ${cfg.ecryptfsBakPath} - ${cfg.userName} users 7d"
-    ] else []);
-
-    systemd.timers."ecryptfsBakAgent" = lib.mkIf cfg.enableEcryptfs {
-    wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnBootSec = "5m";
-        Unit = "ecryptfsBakAgent.service";
-      };
-    };
-
-    systemd.services."ecryptfsBakAgent" = lib.mkIf cfg.enableEcryptfs {
-      path = with pkgs; [ gnutar gzip ];
-      script = ''
-        /run/current-system/sw/bin/rm -rf /home/${cfg.userName}/.cache/*
-        /run/current-system/sw/bin/tar cfz ${cfg.ecryptfsBakPath}/ecryptfs_$(date +"%y_%m_%d").tar.gz /home/.ecryptfs/${cfg.userName}/
-      '';
-      serviceConfig = {
-        Type = "oneshot";
-        User = "root";
-      };
-    };
-
-    #############################################################################
-    # Encrypted Home Drive
-    #############################################################################
     security.pam.enableEcryptfs = cfg.enableEcryptfs;
     boot.kernelModules = lib.mkIf cfg.enableEcryptfs ["ecryptfs"];
   };

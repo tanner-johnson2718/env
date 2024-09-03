@@ -59,7 +59,6 @@
         config.user.config.reposPath = "/var/git";
         config.user.config.envRepo = "env";
         config.user.config.enableEcryptfs = true;
-        config.user.config.ecryptfsBakPath = "/var/ecryptfsBak";
 
         config.term.config.enable = true;
         config.term.config.extraTerminalPkgs = with pkgs; [ pev bintools aircrack-ng tcpdump ];
