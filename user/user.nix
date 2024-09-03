@@ -3,6 +3,7 @@ let
   cfg = config.user.config;
 in
 {
+
   options = {
     user.config.enable = lib.mkEnableOption "Enable Module";
     user.config.userName = lib.mkOption {
@@ -47,6 +48,18 @@ in
       example = "Cascadia Mono";
       description = "Default Font";
     };
+    user.config.defaultSSID = lib.mkOption {
+      type = lib.types.str;
+      default = "NaN";
+      example = "home wifi";
+      description = "Default wifi network";
+    };
+    user.config.defaultBSSID = lib.mkOption {
+      type = lib.types.str;
+      default = "password";
+      example = "password";
+      description = "Default wifi password";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -56,7 +69,7 @@ in
       description = "Main System User";
       extraGroups = [ "networkmanager" "wheel" ];
     };
-    
+
     # Set Time and location
     time.timeZone = "America/Los_Angeles";
     i18n.defaultLocale = "en_US.UTF-8";
@@ -78,8 +91,19 @@ in
     fonts.fontconfig.defaultFonts.serif = [cfg.defaultFont];
     fonts.fontconfig.defaultFonts.sansSerif = [cfg.defaultFont];
 
-    environment.systemPackages = with pkgs; []
-      ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
+    environment.systemPackages = with pkgs; [
+      git
+    ]
+    ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
+
+    networking = {
+      hostName = config.user.config.userName;
+      wireless.networks.Nan.psk = "password";
+      interfaces = {
+        wlan0.useDHCP = true;
+        eth0.useDHCP = true;
+      };
+    };
 
     ###########################################################################
     # Tmp Files Rules.

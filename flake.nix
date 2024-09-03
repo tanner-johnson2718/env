@@ -7,9 +7,12 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     raspberry-pi-nix.url = "github:nix-community/raspberry-pi-nix";
+    raspberry-pi-nix.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.url = "github:nix-community/home-manager?rev=e1391fb22e18a36f57e6999c7a9f966dc80ac073";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, raspberry-pi-nix, ... }:
+  outputs = { self, nixpkgs, raspberry-pi-nix, home-manager, ... }:
   let
     inherit (nixpkgs.lib) nixosSystem;
     common = {...}:{
@@ -27,54 +30,46 @@
     nixosConfigurations.default = 
     let
       system = "x86_64-linux";
+      userName = "lcars";
     in 
     nixosSystem  {
       inherit system;
       modules = [ ( {config, lib, modulesPath, pkgs,  ...}:{
         imports = [
           common
-          ./home
-          ./hp_envy_15t.nix
+          ./hw/hp_envy_15t.nix
+          ./user
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.${userName} = {config, pkgs, ...}:{
+              imports = [ ./home ];
+              home.username = userName;
+              home.homeDirectory = "/home/${userName}";
+
+              home.stateVersion = "24.05";
+              programs.home-manager.enable = true;
+            };
+          }
         ];
 
         config.user.config.enable = true;
-        config.user.config.userName = "lcars";
+        config.user.config.userName = userName;
         config.user.config.reposPath = "/var/git";
         config.user.config.envRepo = "env";
         config.user.config.enableEcryptfs = true;
         config.user.config.ecryptfsBakPath = "/var/ecryptfsBak";
-        
 
         config.term.config.enable = true;
-        config.term.config.extraTerminalPkgs = with pkgs;
-        [
-          pev
-          bintools
-          aircrack-ng 
-          tcpdump 
-        ];
+        config.term.config.extraTerminalPkgs = with pkgs; [ pev bintools aircrack-ng tcpdump ];
 
         config.gnome.config.enable = true;
-        config.gnome.config.extraDEPkgs =
-        with pkgs;
-        [
-          vscode
-          nil
-          prusa-slicer
-          rpi-imager
-          wireshark
-        ];
+        config.gnome.config.extraDEPkgs = with pkgs; [ vscode nil prusa-slicer rpi-imager wireshark ];
 
         config = {
           nixpkgs.hostPlatform = "${system}";
           boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-          
-          networking = {
-            wireless.networks.Nan.psk = "password";
-            networkmanager.enable = true;
-            hostName = config.user.config.userName;
-            useDHCP = lib.mkDefault true;
-          };  
         };
       })];
     };
@@ -93,7 +88,7 @@
       modules = [ ( {config, lib, modulesPath,  ...}:{
         imports = [ 
           common
-          ./home
+          ./user
         ];
 
         config.user.config.enable = true;
@@ -103,19 +98,8 @@
 
         config.term.config.enable = true;
 
-        config = {
-          nixpkgs.hostPlatform = "${system}";
-          raspberry-pi-nix.board = "bcm2711";
-          networking = {
-            hostName = config.user.config.userName;
-            wireless.networks.Nan.psk = "password";
-            useDHCP = true;
-            interfaces = {
-              wlan0.useDHCP = true;
-              eth0.useDHCP = true;
-            };
-          };
-        };
+        nixpkgs.hostPlatform = "${system}";
+        raspberry-pi-nix.board = "bcm2711";
       })];
     };
 
@@ -123,7 +107,7 @@
     # Nix Modules to export sys config other systems
    ###########################################################################
 
-    nixosModules.home = (import ./home);
+    nixosModules.user = (import ./user);
     nixosModules.argp = (import ./argp.nix);
 
    ###########################################################################
