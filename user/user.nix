@@ -42,18 +42,6 @@ in
       example = "Cascadia Mono";
       description = "Default Font";
     };
-    user.config.defaultSSID = lib.mkOption {
-      type = lib.types.str;
-      default = "NaN";
-      example = "home wifi";
-      description = "Default wifi network";
-    };
-    user.config.defaultBSSID = lib.mkOption {
-      type = lib.types.str;
-      default = "password";
-      example = "password";
-      description = "Default wifi password";
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -89,15 +77,6 @@ in
       git
     ]
     ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
-
-    networking = {
-      hostName = config.user.config.userName;
-      wireless.networks.Nan.psk = "password";
-      interfaces = {
-        wlan0.useDHCP = true;
-        eth0.useDHCP = true;
-      };
-    };
 
     security.pam.enableEcryptfs = cfg.enableEcryptfs;
     boot.kernelModules = lib.mkIf cfg.enableEcryptfs ["ecryptfs"];

@@ -61,6 +61,7 @@
         config.user.config.enableEcryptfs = true;
 
         config.term.config.enable = true;
+        config.term.config.leader = "Space";
         config.term.config.extraTerminalPkgs = with pkgs; [ pev bintools aircrack-ng tcpdump ];
 
         config.gnome.config.enable = true;
@@ -69,6 +70,15 @@
         config = {
           nixpkgs.hostPlatform = "${system}";
           boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
+          networking = {
+           hostName = config.user.config.userName;
+           wireless.networks.Nan.psk = "password";
+           interfaces = {
+             wlan0.useDHCP = true;
+             eth0.useDHCP = true;
+           };
+         };
         };
       })];
     };
@@ -99,6 +109,15 @@
 
         nixpkgs.hostPlatform = "${system}";
         raspberry-pi-nix.board = "bcm2711";
+
+        networking = {
+          hostName = config.user.config.userName;
+          wireless.networks.Nan.psk = "password";
+          interfaces = {
+            wlan0.useDHCP = true;
+            eth0.useDHCP = true;
+          };
+        };
       })];
     };
 
@@ -107,7 +126,6 @@
    ###########################################################################
 
     nixosModules.user = (import ./user);
-    nixosModules.argp = (import ./argp.nix);
 
    ###########################################################################
     # Nix Shells to export developer environments to other system.

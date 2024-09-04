@@ -23,6 +23,12 @@ in
       example = "[ jq ]";
       description = "Any extra system packages you need for termainal work";
     };
+    term.config.leader = lib.mkOption {
+      type = lib.types.str;
+      default = "b";
+      example = "Space";
+      description = "Tmux escape leader key";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -60,7 +66,7 @@ in
       newSession = true;
       withUtempter = true;
       terminal = "tmux-direct";
-      shortcut = "Space";
+      shortcut = cfg.leader;
       secureSocket = true;
       reverseSplit = false;
       resizeAmount = 5;
@@ -76,27 +82,33 @@ in
       extraConfig = ''
         set-option -g status-right "#(whoami)@#(hostname)"
         set-window-option -g window-status-current-style bg="#7c3e8e"
-        bind-key -T copy-mode-vi c send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
-        bind-key -T copy-mode-vi C-Up send-keys -X previous-paragraph
-        bind-key -T copy-mode-vi C-Down send-keys -X next-paragraph
-        bind-key -T copy-mode-vi C-Left send-keys -X previous-word
-        bind-key -T copy-mode-vi C-Right send-keys -X next-word-end
-        set -s command-alias[0] tj='last-pane'
-        set -s command-alias[1] tp='split-window -h'
-        set -s command-alias[2] tw='select-window'
-        set -s command-alias[3] t0='select-window- t 0'
-        set -s command-alias[4] t1='select-window- t 1'
-        set -s command-alias[5] t2='select-window- t 2'
-        set -s command-alias[6] t3='select-window- t 3'
-        set -s command-alias[7] t4='select-window- t 4'
-        set -s command-alias[8] t5='select-window- t 5'
-        set -s command-alias[9] t6='select-window- t 6'
-        set -s command-alias[10] t7='select-window -t 7'
-        set -s command-alias[11] t8='select-window -t 8'
-        set -s command-alias[12] t9='select-window -t 9'
-        set -s command-alias[13] ts='copy-mode'
         set -g mouse on
         set -g renumber-windows on
+
+        setw -g mode-keys vi
+        bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
+        bind-key -T copy-mode-vi v send -X begin-selection
+        bind-key -T copy-mode-vi C-v send -X rectangle-toggle
+
+        set -s command-alias[00] tj='last-pane'
+        set -s command-alias[01] tp='split-window -h'
+        set -s command-alias[02] tw='select-window'
+        set -s command-alias[03] tc='copy-mode'
+        set -s command-alias[04] tl='rename-window'
+        set -s command-alias[05] ts='swap-pane -D'
+        set -s command-alias[06] tg='swap-pane -D ; last-pane'
+
+        set -s command-alias[100] t0='select-window -t 0'
+        set -s command-alias[101] t1='select-window -t 1'
+        set -s command-alias[102] t2='select-window -t 2'
+        set -s command-alias[103] t3='select-window -t 3'
+        set -s command-alias[104] t4='select-window -t 4'
+        set -s command-alias[105] t5='select-window -t 5'
+        set -s command-alias[106] t6='select-window -t 6'
+        set -s command-alias[107] t7='select-window -t 7'
+        set -s command-alias[108] t8='select-window -t 8'
+        set -s command-alias[109] t9='select-window -t 9'
+        
       '' + cfg.tmuxExtraConf;
     };
 
@@ -115,11 +127,7 @@ in
         export GIT_PS1_SHOWUNTRACKEDFILES=true
         source /run/current-system/sw/share/bash-completion/completions/git-prompt.sh
 
-        if [[ "''${SHLVL}" -eq "2" ]]; then
-          export PROMPT_COLOR='34'
-        else
-          export PROMPT_COLOR='31'
-        fi
+        export PROMPT_COLOR='34'
 
         export PS1='\n\[\033[01;''${PROMPT_COLOR}m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
       '';
@@ -128,23 +136,19 @@ in
         if [ -z $TMUX ];then
           tmux attach
         fi
-        
-        function gdpush {
-          git add -u
-          git commit -m "AUTO COMMIT"
-          git push
-        }
-        export gdpush
 
-        function nix_closure {
-          if [ $# != 1 ]; then 
-            echo "usage nix_closure <store dir>"
-            return 0;
+        function nix_rebuild {
+          if [ $# = 1 ]; then
+            _t=$1
+          else
+            t="default"
           fi
-          nix path-info --recursive --closure-size --human-readable $1
-          return $?
+          pushd . > /dev/null
+          cd ${config.user.config.reposPath}/${config.user.config.envRepo}
+          sudo nixos-rebuild --flake .#$t switch
+          popd > /dev/null
         }
-        export nix_closure
+        export nix_rebuild
 
         function tpane {
           _n=$(tmux list-panes | wc -l)
@@ -166,62 +170,9 @@ in
         }
         export tjump
       '' 
-      + cfg.bashExtra
-      +(if true then ''
-        function statall {
-          pushd . > /dev/null
-          for d in ${config.user.config.reposPath}/* ; do
-            echo $d
-            cd $d
-            git status --porcelain
-            echo   
-          done
-          popd > /dev/null
-        }
-        export statall
+      + cfg.bashExtra;
         
-        function nix_rebuild {
-          if [ $# != 1 ]; then
-            return 0;
-          fi
-          pushd . > /dev/null
-          cd ${config.user.config.reposPath}/${config.user.config.envRepo}
-          sudo nixos-rebuild --flake .#$1 switch
-          popd > /dev/null
-        }
-        export nix_build
-  
-        function nix_nuke {
-          sudo nix-collect-garabage -d
-        }
-        export nix_nuke
-
-                function nix_flake_update {
-          pushd . > /dev/null
-  
-          _path=${config.user.config.reposPath}/${config.user.config.reposPath}
-          echo "Updating env flake at $_path"
-          cd $_path
-          nix flake update
-          _rev=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.rev]" | g -oe "[a-z0-9]*")
-          _owner=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.owner]" | g -oe "[a-zA-Z0-9.-]*")
-          _repo=$(nix flake metadata --json | jq "[ .locks.nodes.nixpkgs.locked.repo]" | g -oe "[a-zA-Z0-9.-]*")
-
-          echo "Updated to rev=$_rev ... Updating local nixpkgs"
-          cd ..
-          if ! [ -d nixpkgs ]; then
-            git clone https://github.com/$_owner/$_repo.git
-          fi
-
-          cd nixpkgs
-          git pull
-          git checkout $_rev
-
-          popd > /dev/null
-        }
-        export nix_flake_update
-      '' else "");
-
+        
       shellAliases = {
         # Use these for fast navigation of the terminal
         a = "alias";
@@ -233,11 +184,13 @@ in
         lF = "declare";                  # REALLY LIST FUNCTIONS
         lc = "complete";                 # LIST COMPLETIONS  
         gs = "git status";
-        ts = "tmux copy-mode";            # T SCROLL
-        tw = "tmux new-window";           # T WINDOW
-        tp = "tpane";                     # T PANE
-        tj = "tjump";                     # T JUMP
-        tl = "tmux rename-window";        # T LABEL
+        tc = "tmux copy-mode            # T COPY";
+        tw = "tmux new-window           # T WINDOW";
+        tp = "tpane                     # T PANE";
+        tj = "tjump                     # T JUMP";
+        tl = "tmux rename-window        # T LABEL";
+        ts = "tmux swap-pane -D         # T SWAP";
+        tg = "tmux swap-pane -D; tjump  # T GRAB";
         t0 = "tmux select-window -t 0";
         t1 = "tmux select-window -t 1";
         t2 = "tmux select-window -t 2";
