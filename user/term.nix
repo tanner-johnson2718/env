@@ -92,7 +92,7 @@ in
 
         set -s command-alias[00] tj='last-pane'
         set -s command-alias[01] tp='split-window -h'
-        set -s command-alias[02] tw='select-window'
+        set -s command-alias[02] tw='new-window'
         set -s command-alias[03] tc='copy-mode'
         set -s command-alias[04] tl='rename-window'
         set -s command-alias[05] ts='swap-pane -D'
