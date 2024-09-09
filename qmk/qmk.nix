@@ -14,8 +14,13 @@ pkgs.mkShell {
     cd qmk_firmware
     git checkout ${qmk_firmware_rev}
     qmk setup
+    if ! [ -f ${keymap} ]; then
+      echo "File keymap=${keymap} not found"
+      exit 1
+    fi
     cp ${keymap} ${keymap_path}
     qmk compile --keyboard gmmk/gmmk2/p65/ansi --keymap via
     sudo qmk flash --keyboard gmmk/gmmk2/p65/ansi --keymap via
+    exit 0
   '';
 }
