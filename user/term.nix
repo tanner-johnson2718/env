@@ -90,6 +90,11 @@ in
         bind-key -T copy-mode-vi v send -X begin-selection
         bind-key -T copy-mode-vi C-v send -X rectangle-toggle
 
+        bind-key -T copy-mode-vi C-Up send-keys -X previous-paragraph
+        bind-key -T copy-mode-vi C-Down send-keys -X next-paragraph
+        bind-key -T copy-mode-vi C-Left send-keys -X previous-word
+        bind-key -T copy-mode-vi C-Right send-keys -X next-word-end
+
         set -s command-alias[00] tj='last-pane'
         set -s command-alias[01] tp='split-window -h'
         set -s command-alias[02] tw='new-window'
@@ -139,8 +144,13 @@ in
 
         function nix_rebuild {
           if [ $# = 1 ]; then
-            _t=$1
+            t=$1
           else
+            read -p "Build default nixosConfig out of ${config.user.config.reposPath}/${config.user.config.envRepo}? (y/n): " var
+            if ! [ $var = "y" ]; then 
+              echo exiting...
+              return 1
+            fi
             t="default"
           fi
           pushd . > /dev/null
