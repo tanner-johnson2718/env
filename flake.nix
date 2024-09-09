@@ -43,6 +43,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = ".bak";
             home-manager.users.${userName} = {config, pkgs, ...}:{
               imports = [ ./home ];
               home.username = userName;
@@ -65,7 +66,7 @@
         config.term.config.extraTerminalPkgs = with pkgs; [ pev bintools aircrack-ng tcpdump ];
 
         config.gnome.config.enable = true;
-        config.gnome.config.extraDEPkgs = with pkgs; [ vscode nil prusa-slicer rpi-imager wireshark ];
+        config.gnome.config.extraDEPkgs = with pkgs; [ prusa-slicer rpi-imager wireshark ];
 
         config = {
           nixpkgs.hostPlatform = "${system}";

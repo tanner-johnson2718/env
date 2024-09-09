@@ -1,4 +1,4 @@
-{config, lib, ...}:
+{config, lib, pkgs, ...}:
 let
   cfg = config.gnome.config;
 in {
@@ -14,7 +14,10 @@ in {
 
   config = lib.mkIf cfg.enable {
 
-    environment.systemPackages = cfg.extraDEPkgs;
+    environment.systemPackages = with pkgs; [
+      vscode
+      nil
+    ] ++ cfg.extraDEPkgs;
 
     programs.firefox = {
       enable = true;
