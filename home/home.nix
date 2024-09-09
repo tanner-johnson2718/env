@@ -1,4 +1,12 @@
-{pkgs, ...}:{
+{pkgs, not_yse, ...}:
+let
+
+in
+{
+  options = {
+
+  };
+
   programs.git.enable = true;
   programs.git.userEmail = "tanner-johnson2718@gmail.com";
   programs.git.userName = "tanner-johnson2718";
@@ -18,8 +26,20 @@
     haskell.enable = false;
     mutableExtensionsDir = false;
     package = pkgs.vscode;
-    keybindings = [];
+    # keybindings = [(
+    #   {
+    #     key="ctrl+e";
+    #     command="editor.action.insertCursorAtEndOfEachLineSelected";
+    #   }
+    # )];
     # languageSnippets = "";
     # userSettings = "";
+  };
+
+  programs.kitty = {
+    enable = true;
+    font.name = "Cascadia Mono";
+    font.size = 14;
+    theme = "Darkside";
   };
 }

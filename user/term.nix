@@ -49,17 +49,10 @@ in
       jq
       git
       nix-derivation
+      kitty
     ] ++ cfg.extraTerminalPkgs;
 
-    console = {
-      enable = true;
-      font = null;
-      keyMap = "us";
-      colors = [ ];
-      packages = [ ];
-      earlySetup = false;
-      useXkbConfig = false; 
-    };
+    console.enable = false;
 
     programs.tmux = {
       enable = true;
@@ -80,10 +73,12 @@ in
       baseIndex = 1;
       aggressiveResize = false;
       extraConfig = ''
-        set-option -g status-right "#(whoami)@#(hostname)"
+        set-option -g status-right ""
+        set -g status-bg "#5c3480"
         set-window-option -g window-status-current-style bg="#7c3e8e"
         set -g mouse on
         set -g renumber-windows on
+        set-option -g status-position top
 
         setw -g mode-keys vi
         bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
