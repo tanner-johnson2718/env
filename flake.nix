@@ -130,6 +130,10 @@
    ###########################################################################
     # Nix Shells to export developer environments to other system.
    ###########################################################################
-    # devShells.${system} = { qmk = (import ./qmk/qmk.nix){ inherit pkgs; keymap="./qmk/keymap.c"; }; };
+    devShells.x86_64-linux   = 
+    let
+      system="x86_64-linux";
+      pkgs = import nixpkgs {inherit system;};
+    in{ qmk = (import ./qmk/qmk.nix){ inherit pkgs; keymap="../qmk/keymap.c"; }; };
   };
 }
