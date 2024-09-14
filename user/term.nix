@@ -48,8 +48,10 @@ in
       nmap
       jq
       git
-      nix-derivation
-      kitty
+      bintools
+      usbutils
+      pciutils
+      util-linux
     ] ++ cfg.extraTerminalPkgs;
 
     console.enable = false;
@@ -97,6 +99,7 @@ in
         set -s command-alias[04] tl='rename-window'
         set -s command-alias[05] ts='swap-pane -D'
         set -s command-alias[06] tg='swap-pane -D ; last-pane'
+        set -s command-alias[07] th='split-window -v'
 
         set -s command-alias[100] t0='select-window -t 0'
         set -s command-alias[101] t1='select-window -t 1'
@@ -174,6 +177,15 @@ in
           fi
         }
         export tjump
+
+        function tlabel {
+          if [ $_n = "1" ]; then
+            return 0;
+          elif [ $_n = "2" ]; then
+            tmux rename-window $1
+          fi
+        }
+        export tlabel
       '' 
       + cfg.bashExtra;
         
@@ -184,18 +196,21 @@ in
         l = "ls -CF";
         g = "grep";
         e = "exit";
+        c = "clear";
         ll = "ls -la";
         lf = "declare -F";               # LIST FUNCTIONS 
         lF = "declare";                  # REALLY LIST FUNCTIONS
-        lc = "complete";                 # LIST COMPLETIONS  
+        lc = "complete";                 # LIST COMPLETIONS
+        lv = "echo shell levl = ''$SHLVL";
         gs = "git status";
         tc = "tmux copy-mode            # T COPY";
         tw = "tmux new-window           # T WINDOW";
         tp = "tpane                     # T PANE";
         tj = "tjump                     # T JUMP";
-        tl = "tmux rename-window        # T LABEL";
+        tl = "tlabel                    # T LABEL";
         ts = "tmux swap-pane -D         # T SWAP";
         tg = "tmux swap-pane -D; tjump  # T GRAB";
+        th = "tmux split-window -v      # T HALF";
         t0 = "tmux select-window -t 0";
         t1 = "tmux select-window -t 1";
         t2 = "tmux select-window -t 2";

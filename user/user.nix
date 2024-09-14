@@ -24,12 +24,6 @@ in
       example = "env-work";
       description = "Where the repo containing the nixosConfigurations.default system config flake i.e. this repo or one consuming it";
     };
-    user.config.enableEcryptfs = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      example = "true";
-      description = "Enable support for CURRENTLY encrypted home drive";
-    };
     user.config.extraFontPkgs = lib.mkOption {
       type = lib.types.listOf lib.types.anything;
       default = [pkgs.cascadia-code];
@@ -72,13 +66,5 @@ in
     fonts.fontconfig.defaultFonts.monospace = [cfg.defaultFont];
     fonts.fontconfig.defaultFonts.serif = [cfg.defaultFont];
     fonts.fontconfig.defaultFonts.sansSerif = [cfg.defaultFont];
-
-    environment.systemPackages = with pkgs; [
-      git
-    ]
-    ++ (if cfg.enableEcryptfs then [ecryptfs] else [] );
-
-    security.pam.enableEcryptfs = cfg.enableEcryptfs;
-    boot.kernelModules = lib.mkIf cfg.enableEcryptfs ["ecryptfs"];
   };
 }

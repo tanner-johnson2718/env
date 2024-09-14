@@ -1,7 +1,7 @@
-{...}:{
-  imports = [
-    ./user.nix
-    ./term.nix
-    ./gnome.nix
-  ];
+{...}:
+{
+    imports = [
+        ./term.nix
+        ./user.nix
+    ]
 }
