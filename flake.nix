@@ -19,26 +19,20 @@
   in {
 
   ###########################################################################
-  # Config for init node
+  # Config for root node
   ###########################################################################
 
-    nixosConfigurations.init = 
+    nixosConfigurations.root = 
     let
       system = "x86_64-linux";
-      userName = "init";
     in 
     nixosSystem  {
       inherit system;
       modules = [ ( {config, lib, pkgs,  ...}:{
         imports = [
           common
-          ./user;
+          ./term.nix
         ];
-
-        config.user.config.enable = true;
-        config.user.config.userName = userName;
-        config.user.config.reposPath = "/var/git";
-        config.user.config.envRepo = "env";
 
         config.term.config.enable = true;
         config.term.config.leader = "Space";
@@ -48,6 +42,20 @@
           nixpkgs.hostPlatform = "${system}";
           boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
         };
+
+        virtualisation.vmVariant = {
+          virtualisation = {
+            memorySize = 2048; # Use 2048MiB memory.
+            cores = 4;
+            graphics = false;
+          };
+        };
+          services.openssh = {
+            enable = true;
+            settings.PasswordAuthentication = true;
+          };
+
+          networking.firewall.allowedTCPPorts = [ 22 ];
       })];
     };
 
@@ -55,6 +63,6 @@
     # Nix Modules to export sys config other systems
    ###########################################################################
 
-    nixosModules.user = (import ./user);
+    nixosModules.term = (import ./term.nix);
   };
 }

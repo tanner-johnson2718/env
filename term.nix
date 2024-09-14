@@ -132,31 +132,13 @@ in
 
         export PROMPT_COLOR='34'
 
-        export PS1='\n\[\033[01;''${PROMPT_COLOR}m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
+        export PS1='\n\[\033[01;''${PROMPT_COLOR}m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)"\033[01;32m\) \[\033[00m\] '
       '';
 
       interactiveShellInit = ''
         if [ -z $TMUX ];then
           tmux attach
         fi
-
-        function nix_rebuild {
-          if [ $# = 1 ]; then
-            t=$1
-          else
-            read -p "Build default nixosConfig out of ${config.user.config.reposPath}/${config.user.config.envRepo}? (y/n): " var
-            if ! [ $var = "y" ]; then 
-              echo exiting...
-              return 1
-            fi
-            t="default"
-          fi
-          pushd . > /dev/null
-          cd ${config.user.config.reposPath}/${config.user.config.envRepo}
-          sudo nixos-rebuild --flake .#$t switch
-          popd > /dev/null
-        }
-        export nix_rebuild
 
         function tpane {
           _n=$(tmux list-panes | wc -l)
