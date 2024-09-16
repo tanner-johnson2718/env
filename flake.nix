@@ -9,7 +9,9 @@
 
   outputs = { self, nixpkgs, ... }:
   let
+    system = "x86_64-linux";
     inherit (nixpkgs.lib) nixosSystem;
+    pkgs = nixpkgs.legacyPackages.${system};
     common = {...}:{
       system.stateVersion = "24.05";
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -18,20 +20,12 @@
     };
   in {
 
-  ###########################################################################
-  # Config for root node
-  ###########################################################################
-
-    nixosConfigurations.root = 
-    let
-      system = "x86_64-linux";
-    in 
-    nixosSystem  {
-      inherit system;
-      modules = [ ( {config, lib, pkgs,  ...}:{
+    nixosConfigurations.root = nixosSystem  {
+      modules = [ ( {config, lib, pkgs, modulesPath,  ...}:{
         imports = [
           common
           ./term.nix
+          "${modulesPath}/virtualisation/qemu-vm.nix"
         ];
 
         config.term.config.enable = true;
@@ -40,28 +34,24 @@
 
         config = {
           nixpkgs.hostPlatform = "${system}";
-          boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-        };
+          networking.firewall.allowedTCPPorts = [ 22 ];
+          users.extraUsers.root.password = "root";
+          users.mutableUsers = false;
 
-        virtualisation.vmVariant = {
           virtualisation = {
             memorySize = 2048; # Use 2048MiB memory.
             cores = 4;
             graphics = false;
           };
-        };
+
           services.openssh = {
             enable = true;
             settings.PasswordAuthentication = true;
+            permitRootLogin = "yes";
           };
-
-          networking.firewall.allowedTCPPorts = [ 22 ];
+        };
       })];
     };
-
-   ###########################################################################
-    # Nix Modules to export sys config other systems
-   ###########################################################################
 
     nixosModules.term = (import ./term.nix);
   };

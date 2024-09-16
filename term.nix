@@ -76,8 +76,9 @@ in
       aggressiveResize = false;
       extraConfig = ''
         set-option -g status-right ""
-        set -g status-bg "#5c3480"
-        set-window-option -g window-status-current-style bg="#7c3e8e"
+        set -g status-bg "#b4befe"
+        set -g status-fg "#f9e2af"
+        set-window-option -g window-status-current-style bg="#89b4fa"
         set -g mouse on
         set -g renumber-windows on
         set-option -g status-position top
@@ -132,7 +133,7 @@ in
 
         export PROMPT_COLOR='34'
 
-        export PS1='\n\[\033[01;''${PROMPT_COLOR}m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)"\033[01;32m\) \[\033[00m\] '
+        export PS1='\n\[\033[01;''${PROMPT_COLOR}m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
       '';
 
       interactiveShellInit = ''
