@@ -76,9 +76,9 @@ in
       aggressiveResize = false;
       extraConfig = ''
         set-option -g status-right ""
-        set -g status-bg "#b4befe"
+        set -g status-bg "#5b6078"
         set -g status-fg "#f9e2af"
-        set-window-option -g window-status-current-style bg="#89b4fa"
+        set-window-option -g window-status-current-style bg="#939ab7"
         set -g mouse on
         set -g renumber-windows on
         set-option -g status-position top

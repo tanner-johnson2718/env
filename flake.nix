@@ -39,9 +39,19 @@
           users.mutableUsers = false;
 
           virtualisation = {
-            memorySize = 2048; # Use 2048MiB memory.
+            memorySize = 2048; # MiB
             cores = 4;
             graphics = false;
+            qemu = {
+              virtioKeyboard = true;
+              # package = ...
+              options = [ ];
+              networkingOptions = [ ];
+              guestAgent.enable = true;
+              drives = [ ];
+              diskInterface = [ ];
+              consoles = [ ];
+            };
           };
 
           services.openssh = {
