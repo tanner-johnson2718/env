@@ -1,4 +1,5 @@
 #!/usr/bin/bash 
+set -e
 
 # Check that we are in the env dir at root
 if [ -f .git/config ]; then
@@ -23,7 +24,7 @@ fi
 
 # Check if build is fresh otherwise build
 echo "Building ... "
-nix build .#nixosConfigurations.root.config.system.build.vm
+nix build .#nixosConfigurations.root.config.system.build.vm --impure
 export QEMU_NET_OPTS="hostfwd=tcp::2221-:22"
 result/bin/run-nixos-vm &
 

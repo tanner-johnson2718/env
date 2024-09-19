@@ -34,23 +34,30 @@
 
         config = {
           nixpkgs.hostPlatform = "${system}";
-          networking.firewall.allowedTCPPorts = [ 22 ];
+          networking.firewall.enable = false;
           users.extraUsers.root.password = "root";
           users.mutableUsers = false;
+
+          # networking.interfaces.eth0.useDHCP = true;
+          # networking.interfaces.br0.useDHCP = true;
+          # networking.bridges = {
+          #   "br0" = {
+          #     interfaces = [ "eth0" ];
+          #   };
+          # };
 
           virtualisation = {
             memorySize = 2048; # MiB
             cores = 4;
             graphics = false;
-            qemu = {
-              virtioKeyboard = true;
-              # package = ...
-              options = [ ];
-              networkingOptions = [ ];
-              guestAgent.enable = true;
-              drives = [ ];
-              diskInterface = [ ];
-              consoles = [ ];
+            qemu.networkingOptions = ["-net nic -net user"]; 
+            sharedDirectories = {
+              vargit = {
+                source = "/var/git";
+                target = "/var/git";
+                securityModel = "none"; 
+              };
+              
             };
           };
 
@@ -58,6 +65,12 @@
             enable = true;
             settings.PasswordAuthentication = true;
             permitRootLogin = "yes";
+            knownHosts = {
+              root = {
+                publicKey = (builtins.substring 0 80 (builtins.readFile "/home/user/.ssh/id_ed25519.pub"));
+                hostNames = ["10.0.2.2"];
+              };
+            };
           };
         };
       })];

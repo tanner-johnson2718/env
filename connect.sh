@@ -1,1 +1,1 @@
-ssh -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no root@localhost -p 2221
+ssh -vv -i ~/.ssh/id_ed25519 root@localhost -p 2221
