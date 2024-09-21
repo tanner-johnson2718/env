@@ -45,7 +45,7 @@
     lF = "declare";                  # REALLY LIST FUNCTIONS
     lc = "complete";                 # LIST COMPLETIONS
     lv = "echo shell levl = ''$SHLVL";
-    lw = "echo 'Desktops)' ; wmctrl -d ; echo '' ; echo 'Windows)' ; wmctrl -l";
+    lw = "echo 'Desktops)' ; wmctrl -d ; echo '' ; echo 'Windows)' ; wmctrl -lG";
     gs = "git status";
     tc = "tmux copy-mode            # T COPY";
     tw = "tmux new-window           # T WINDOW";
@@ -163,8 +163,9 @@
       export tlabel
 
       function wswap {
-        wmctrl -d | grep "\*" | grep -Eo '[0-9]{1,4}x[0-9]{1,4}' | head -n 1
-
+        w=$(wmctrl -d | grep "\*" | grep -Eo '[0-9]{1,4}x[0-9]{1,4}' | head -n 1 | grep -Eo '[0-9]{1,4} | head -n 1') 
+        w=$((w/2))
+        echo Under Construction
       }
       export wswap
     '';
@@ -175,6 +176,9 @@
     aliases = {
       s = "switch";
       sm = "switch master";
+      a = "add";
+      c = "commit";
+      co = "checkout";
     };
     ignores = [
       "*.o"
