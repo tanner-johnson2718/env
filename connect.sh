@@ -1,1 +1,0 @@
-ssh -vv -i ~/.ssh/id_ed25519 root@localhost -p 2221
