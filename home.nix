@@ -25,6 +25,7 @@
     patchelf
     nix-derivation
     wmctrl
+    aircrack-ng
   ];
 
   home.file = {  };
