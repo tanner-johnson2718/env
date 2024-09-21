@@ -1,6 +1,6 @@
 # ENV
 
-Public export of my terminal config.
+Export of my terminal config.
 
 * Install Nix pkg manager
 * Install homemananger
