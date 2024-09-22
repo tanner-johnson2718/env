@@ -26,6 +26,7 @@
     nix-derivation
     wmctrl
     aircrack-ng
+    nettools
   ];
 
   home.file = {  };

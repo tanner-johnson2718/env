@@ -1,10 +1,4 @@
-# TOC
-
-Tacticle Operations Center. Still fleshing this out but heres some thoughts
-
-* Want this to be public and hold a way get my shell anywhere
-* My shell will expose a means to authenticate my self into my infra at large
-* All authentication material should be ephemieris, key material is generated from my Authenticator, auth-ed by an aws instance or something, then immedaitaly deteleted
+# Env
 
 ## Terminal and UX 
 
