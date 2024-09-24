@@ -14,10 +14,7 @@ Export of my terminal config.
 
 ## NixOS Installation (flake)
 
-```nix
-...
-
-```
+Just clone and import
 
 ### TODO
 * Fix the weird color paren issue after git ps1
