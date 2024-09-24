@@ -1,5 +1,5 @@
 {
-  outputs = {self, nixpkgs, ...}:
+  outputs = {...}:
   {
     nixosModules.term = import ./term.nix;
   };
