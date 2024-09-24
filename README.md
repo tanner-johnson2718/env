@@ -24,3 +24,4 @@ Export of my terminal config.
 * Want a "t-flip" that swaps a vert split to a hor split and vice verses
 * Integrate Vim and fd options, Go over `programs.*` attr sets in general and set good values / pull cool stuff in
 * Make a notes module that syncs with a calender?? That'd be cool
+* Switch to xfce?
