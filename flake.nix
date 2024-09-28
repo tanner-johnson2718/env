@@ -8,25 +8,38 @@
   outputs = {self, nixpkgs, home-manager, ...}: {
     nixosModules = {
       asus_gu603 = (import ./hw/asus_gu603.nix);
+      home = (import ./home);
+      common = (import ./common.nix);
     };
 
     nixosConfigurations = { 
       gamebox0 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./configuration.nix
-          (self.nixosModules.asus_gu603 {hostName = "gamebox0";})
           home-manager.nixosModules.home-manager
-          {
-            users.users.gamebox0 = {
-              isNormalUser = true;
-              description = "gamebox0";
-              extraGroups = [ "networkmanager" "wheel" ];
+
+          self.nixosModules.asus_gu603
+          self.nixosModules.common
+          self.nixosModules.home
+
+          ({config, ...}:{
+            config = {
+              asus_gu603.hostName = "gamebox0";
+              home.enable = true;
+              home.userName = "gamebox0";
+              home.term.enable = true;
+              home.kitty.enable = true;
+              home.vscode.enable = true;
+              home.firefox.enable = true;
+
+              users.users.gamebox0 = {
+                isNormalUser = true;
+                description = "Mono User";
+                extraGroups = [ "networkmanager" "wheel" "dialout" ];
+              };
+
             };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.gamebox0 = (import ./home){ userName = "gamebox0";};
-          }  
+          })
         ]; 
       };
     };

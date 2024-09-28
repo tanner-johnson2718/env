@@ -27,6 +27,14 @@
 
     home.file = { 
       "${config.home.homeDirectory}/git-prompt.sh" = { source = ./git-prompt.sh;};
+      "${config.home.homeDirectory}/complete_alias" = { source = ./complete_alias;};
+      "${config.home.homeDirectory}/.bash_complete" = {
+        text = ''
+          . ~/complete_alias
+          complete -F _complete_alias jctl
+          complete -F _complete_alias sctl
+        '';
+      };
     };
 
     home.sessionVariables = {
@@ -63,7 +71,11 @@
       t6 = "tmux select-window -t 6";
       t7 = "tmux select-window -t 7";
       t8 = "tmux select-window -t 8";
-      t9 = "tmux select-window -t 9"; 
+      t9 = "tmux select-window -t 9";
+
+      jctl = "journalctl";
+      sctl = "systemctl";
+      ls_sctl = "systemctl list-units";
     };
 
     # Let Home Manager install and manage itself.
@@ -72,6 +84,7 @@
     programs.tmux = {
       enable = true;
       newSession = true;
+      baseIndex = 1;
       extraConfig = ''
         set -g prefix C-Space
         unbind-key C-b
@@ -131,6 +144,8 @@
         export PROMPT_COLOR='34'
         export PS1='\n\[\033[01;''${PROMPT_COLOR}m\]\W\[\033[01;32m\]$(__git_ps1 " (%s)") \[\033[00m\] '
 
+        source ~/.bash_complete
+
         if [ -z $TMUX ];then
           tmux attach
         fi
@@ -155,10 +170,10 @@
         }
         export tjump
 
-        function tlabel { 
+        function tl { 
           tmux rename-window $1
         }
-        export tlabel
+        export tl
 
         function wswap {
           w=$(wmctrl -d | grep "\*" | grep -Eo '[0-9]{1,4}x[0-9]{1,4}' | head -n 1 | grep -Eo '[0-9]{1,4} | head -n 1') 
