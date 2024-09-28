@@ -1,1 +1,1 @@
-home-manager switch -f ./home.nix -b ~/home.nix.bak
+sudo nixos-rebuild --flake .#gamebox0 switch

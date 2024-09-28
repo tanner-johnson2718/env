@@ -1,7 +1,8 @@
-{ pkgs, home, ... }:
+{ pkgs, home, config, ... }:
 {
 
     home.packages = with pkgs; [
+      bash-completion
       xclip
       btop
       wget
@@ -21,12 +22,15 @@
       wmctrl
       aircrack-ng
       nettools
+      lshw
     ];
 
-    home.file = {  };
+    home.file = { 
+      "${config.home.homeDirectory}/git-prompt.sh" = { source = ./git-prompt.sh;};
+    };
 
     home.sessionVariables = {
-      # EDITOR = "emacs";
+      EDITOR = "vim";
     };
 
     home.shellAliases = {
@@ -47,7 +51,6 @@
       tw = "tmux new-window           # T WINDOW";
       tp = "tpane                     # T PANE";
       tj = "tjump                     # T JUMP";
-      tl = "tlabel                    # T LABEL";
       ts = "tmux swap-pane -D         # T SWAP";
       tg = "tmux swap-pane -D; tjump  # T GRAB";
       th = "tmux split-window -v      # T HALF";
@@ -68,6 +71,7 @@
 
     programs.tmux = {
       enable = true;
+      newSession = true;
       extraConfig = ''
         set -g prefix C-Space
         unbind-key C-b
@@ -151,10 +155,8 @@
         }
         export tjump
 
-        function tlabel {
-          if [ $# = "1" ]; then
-            tmux rename-window $1
-          fi
+        function tlabel { 
+          tmux rename-window $1
         }
         export tlabel
 
