@@ -20,12 +20,152 @@ in
       modules = []
         ++ (if cfg.term.enable then [./term.nix] else [])
         ++ (if cfg.kitty.enable then [./kitty.nix] else [])
-        ++ (if cfg.vscode.enable then [./vscode.nix] else [])
-        ++ (if cfg.firefox.enable then [./firefox.nix] else []);
+        ++ (if cfg.vscode.enable then [./vscode.nix] else []);
     };
 
     environment.systemPackages = with pkgs; []
       ++ (if cfg.kitty.enable then [kitty] else [])
-      ++ (if cfg.firefox.enable then [firefox] else []);
+      ++ (if cfg.firefox.enable then [firefox protonvpn-cli] else []);
+
+    programs.firefox = lib.mkIf cfg.firefox.enable {
+      enable = true;
+      policies = {
+        AllowFileSelectionDialogs = true;
+        AppAutoUpdate = false;
+        AutofillAddressEnabled = false;
+        AutofillCreditCardEnabled = false;
+        BackgroundAppUpdate = false;
+        BlockAboutAddons = false;
+        BlockAboutConfig = false;
+        BlockAboutProfiles = false;
+        BlockAboutSupport = false;
+        Bookmarks = [
+          ({
+            Title = "proton-mail";
+            URL = "https://account.proton.me/mail";
+            Placement = "toolbar";
+            Folder = "proton";
+          })
+          ({
+            Title = "proton-pass";
+            URL = "https://pass.proton.me/u/0/";
+            Placement = "toolbar";
+            Folder = "proton";
+          })
+          ({
+            Title = "proton-vpn";
+            URL = "https://account.protonvpn.com/login";
+            Placement = "toolbar";
+            Folder = "proton";
+          })
+          ({
+            Title = "amazon-shopping";
+            URL = "https://www.amazon.com/";
+            Placement = "toolbar";
+            Folder = "amazon";
+          })
+          ({
+            Title = "amazon-aws";
+            URL = "https://iq.aws.amazon.com/p/create";
+            Placement = "toolbar";
+            Folder = "amazon";
+          })
+          ({
+            Title = "amazon-video";
+            URL = "https://www.amazon.com/gp/video/storefront";
+            Placement = "toolbar";
+            Folder = "amazon";
+          })
+        ];
+        CaptivePortal = false;
+        ContentAnalysis = { Enabled = false; };
+        Cookies = {
+          Behavior = "reject";
+          Locked = false;
+        };
+        DisableAccounts = true;
+        DisableAppUpdate = true;
+        DisableFeedbackCommands = true;
+        DisableFirefoxAccounts = true;
+        DisableFirefoxScreenshots = true;
+        DisableFirefoxStudies = true;
+        DisableFormHistory = true;
+        DisablePocket = true;
+        DisableSystemAddonUpdate = true;
+        DisableTelemetry = true;
+        DisplayBookmarksToolbar = "newtab";
+        DontCheckDefaultBrowser = true;
+        DNSOverHTTPS = {
+          Enabled = true;
+          ProviderURL = "https://1.1.1.1";
+        };
+        EnableTrackingProtection = {
+          Value = true;
+          Locked = false;
+          Cryptomining = true;
+          Fingerprinting = true;
+        };
+        ExtensionSettings = {
+          "*".installation_mode = "blocked";
+          "uBlock0@raymondhill.net" = {
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+              installation_mode = "force_installed";
+            };
+          	"78272b6fa58f4a1abaac99321d503a20@proton.me" = {
+              install_url = "https://addons.mozilla.org/firefox/downloads/latest/proton-pass/latest.xpi";
+              installation_mode = "force_installed";
+            };
+        };
+        ExtensionUpdate = false;
+        SearchBar = "unified";
+        FirefoxHome = {
+          Search = true ;
+          TopSites = false;
+          SponsoredTopSites = false;
+          Highlights = false;
+          Pocket =  false;
+          SponsoredPocket = false;
+          Snippets = false;
+          Locked =  false;
+        };
+        FirefoxSuggest = {
+          webSuggestions = false;
+          sponsoredSuggestions = false;
+          ImproveSuggest = false;
+          Locked = false;
+        };
+        HardwareAcceleration = true;
+        HttpsOnlyMode = "enabled";
+        NetworkPrediction = true;
+        NoDefaultBookmarks = false;
+        OfferToSaveLogins = false;
+        OfferToSaveLoginsDefault = false;
+        PasswordManagerEnabled = false;
+        PictureInPicture = {
+          Enabled = false;
+        };
+        PopupBlocking = {
+          Default = true;
+          Locked = false;
+        };
+        SanitizeOnShutdown = {
+          Cache = true;
+          Cookies = true;
+          Downloads = true;
+          FormData = true;
+          History = true;
+          Sessions = true;
+          SiteSettings = true;
+          OfflineApps = true;
+          Locked = false;
+        };
+        SearchSuggestEnabled = false;
+        ShowHomeButton = false;
+      };
+      preferences = {
+        "privacy.donottrackheader.enabled" = true;
+        "privacy.globalprivacycontrol.enabled" = true;
+      };
+    };
   };
 }  
