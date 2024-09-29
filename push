@@ -1,1 +1,1 @@
-sudo nixos-rebuild --flake .#gamebox0 switch
+sudo nixos-rebuild --flake .#gamebox0 switch --impure
