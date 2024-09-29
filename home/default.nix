@@ -25,7 +25,7 @@ in
 
     environment.systemPackages = with pkgs; []
       ++ (if cfg.kitty.enable then [kitty] else [])
-      ++ (if cfg.firefox.enable then [firefox protonvpn-cli] else []);
+      ++ (if cfg.firefox.enable then [firefox protonvpn-gui] else []);
 
     programs.firefox = lib.mkIf cfg.firefox.enable {
       enable = true;
@@ -47,14 +47,14 @@ in
             Folder = "proton";
           })
           ({
-            Title = "proton-pass";
-            URL = "https://pass.proton.me/u/0/";
+            Title = "proton-calendar";
+            URL = "https://calendar.proton.me/u/0/";
             Placement = "toolbar";
             Folder = "proton";
           })
           ({
-            Title = "proton-vpn";
-            URL = "https://account.protonvpn.com/login";
+            Title = "proton-pass";
+            URL = "https://pass.proton.me/u/0/";
             Placement = "toolbar";
             Folder = "proton";
           })
@@ -76,11 +76,57 @@ in
             Placement = "toolbar";
             Folder = "amazon";
           })
+          ({
+            Title = "nix search";
+            URL = "https://search.nixos.org/packages?channel=unstable";
+            Placement = "toolbar";
+            Folder = "nix";
+          })
+          ({
+            Title = "nix pkgs";
+            URL = "https://github.com/NixOS/nixpkgs";
+            Placement = "toolbar";
+            Folder = "nix";
+          })
+          ({
+            Title = "nix home manager";
+            URL = "https://home-manager-options.extranix.com/";
+            Placement = "toolbar";
+            Folder = "nix";
+          })
+          ({
+            Title = "nix nvidia";
+            URL = "https://nixos.wiki/wiki/Nvidia";
+            Placement = "toolbar";
+            Folder = "nix";
+          })
+          ({
+            Title = "nix flakes";
+            URL = "https://nixos.wiki/wiki/flakes";
+            Placement = "toolbar";
+            Folder = "nix";
+          })
+          ({
+            Title = "nix hardware";
+            URL = "https://github.com/NixOS/nixos-hardware";
+            Placement = "toolbar";
+            Folder = "nix";
+          })
+          ({
+            Title = "chase";
+            URL = "https://secure.chase.com";
+            Placement = "toolbar";
+          })
+          ({
+            Title = "discord";
+            URL = "https://discord.com";
+            Placement = "toolbar";
+          })
         ];
         CaptivePortal = false;
         ContentAnalysis = { Enabled = false; };
         Cookies = {
-          Behavior = "reject";
+          Behavior = "reject-tracker";
           Locked = false;
         };
         DisableAccounts = true;
@@ -168,4 +214,4 @@ in
       };
     };
   };
-}  
+} 
