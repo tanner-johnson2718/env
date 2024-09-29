@@ -10,6 +10,7 @@ in
     home.kitty.enable = lib.mkEnableOption "Enable My Kitty Settings";
     home.vscode.enable = lib.mkEnableOption "Enable My VSCode Settings";
     home.firefox.enable = lib.mkEnableOption "Enable My FireFox Settings";
+    home.threeD.enable = lib.mkEnableOption "Enable 3d printing stuff";
   };
 
   config = lib.mkIf cfg.enable {
@@ -25,7 +26,8 @@ in
 
     environment.systemPackages = with pkgs; []
       ++ (if cfg.kitty.enable then [kitty] else [])
-      ++ (if cfg.firefox.enable then [firefox protonvpn-gui] else []);
+      ++ (if cfg.firefox.enable then [firefox protonvpn-gui] else [])
+      ++ (if cfg.threeD.enable then [prusa-slicer] else []);
 
     programs.firefox = lib.mkIf cfg.firefox.enable {
       enable = true;
@@ -113,6 +115,66 @@ in
             Folder = "nix";
           })
           ({
+            Title = "rippling";
+            URL = "https://app.rippling.com";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "fidelity";
+            URL = "https://nb.fidelity.com";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "nelnet";
+            URL = "https://nelnet.studentaid.gov/welcome";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "progressive";
+            URL = "https://account.apps.progressive.com";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "guardian life";
+            URL = "https://login.guardianlife.com";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "kaiser health";
+            URL = "https://kaiserpermanente.org";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "electrity";
+            URL = "https://www.sce.com/";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "wm";
+            URL = "https://www.wm.com/us/en/mywm/user/dashboard";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "cox";
+            URL = "https://www.cox.com/residential/home.html";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
+            Title = "turboo tax";
+            URL = "https://myturbotax.intuit.com/";
+            Placement = "toolbar";
+            Folder = "finance";
+          })
+          ({
             Title = "chase";
             URL = "https://secure.chase.com";
             Placement = "toolbar";
@@ -120,6 +182,16 @@ in
           ({
             Title = "discord";
             URL = "https://discord.com";
+            Placement = "toolbar";
+          })
+          ({
+            Title = "github";
+            URL = "https://github.com";
+            Placement = "toolbar";
+          })
+          ({
+            Title = "spotify";
+            URL = "https://spotify.com";
             Placement = "toolbar";
           })
         ];

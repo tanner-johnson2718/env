@@ -31,6 +31,7 @@
               home.kitty.enable = true;
               home.vscode.enable = true;
               home.firefox.enable = true;
+              home.threeD.enable = true;
 
               users.users.gamebox0 = {
                 isNormalUser = true;

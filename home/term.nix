@@ -23,6 +23,8 @@
       aircrack-ng
       nettools
       lshw
+      yubico-pam
+      yubikey-manager
     ];
 
     home.file = { 
