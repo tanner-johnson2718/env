@@ -32,6 +32,7 @@
               home.vscode.enable = true;
               home.firefox.enable = true;
               home.threeD.enable = true;
+              home.steam.enable = true;
 
               users.users.gamebox0 = {
                 isNormalUser = true;

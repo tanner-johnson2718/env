@@ -59,6 +59,14 @@ in
         alsa.support32Bit = true;
         pulse.enable = true;
       };
+      
+      pcscd.enable = true;
+    };
+
+    powerManagement = {
+      enable = true;
+      cpuFreqGovernor = "performance";
+      scsiLinkPolicy = "max_performance";
     };
 
     hardware = {
@@ -78,11 +86,12 @@ in
 
         powerManagement = {
           enable = true;
-          finegrained = false;
+          finegrained = true;
         };
 
         prime = {
-          sync.enable   = true;
+          offload.enable   = true;
+          offload.enableOffloadCmd = true;
           intelBusId    = "PCI:0:2:0";
           nvidiaBusId   = "PCI:1:0:0";
         };
@@ -104,5 +113,11 @@ in
       hostName              = lib.mkDefault cfg.hostName;
       networkmanager.enable = lib.mkDefault true;
     };
+
+    environment.systemPackages = with pkgs; [
+      yubioath-flutter
+      yubico-pam
+      yubikey-manager
+    ];
   };
 }

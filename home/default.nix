@@ -11,6 +11,7 @@ in
     home.vscode.enable = lib.mkEnableOption "Enable My VSCode Settings";
     home.firefox.enable = lib.mkEnableOption "Enable My FireFox Settings";
     home.threeD.enable = lib.mkEnableOption "Enable 3d printing stuff";
+    home.steam.enable = lib.mkEnableOption "Enable steam";
   };
 
   config = lib.mkIf cfg.enable {
@@ -26,9 +27,15 @@ in
 
     environment.systemPackages = with pkgs; []
       ++ (if cfg.kitty.enable then [kitty] else [])
-      ++ (if cfg.firefox.enable then [firefox protonvpn-gui] else [])
-      ++ (if cfg.threeD.enable then [prusa-slicer] else []);
+      ++ (if cfg.firefox.enable then [firefox] else [])
+      ++ (if cfg.threeD.enable then [prusa-slicer] else [])
+      ++ (if cfg.steam.enable then [discord] else []);
 
+    programs.steam = lib.mkIf cfg.steam.enable {
+      enable = true;
+      extraCompatPackages = with pkgs; [proton-ge-bin];
+    };
+    
     programs.firefox = lib.mkIf cfg.firefox.enable {
       enable = true;
       policies = {
