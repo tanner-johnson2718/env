@@ -23,6 +23,7 @@
       aircrack-ng
       nettools
       lshw
+      wireshark-cli
     ];
 
     home.file = { 

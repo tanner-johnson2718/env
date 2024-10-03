@@ -147,6 +147,16 @@ in
             URL = "https://www.amazon.com/";
             Placement = "toolbar";
           })
+          ({
+            Title = "youtube";
+            URL = "https://www.youtube.com";
+            Placement = "toolbar";
+          })
+          ({
+            Title = "gmail";
+            URL = "https://www.gmail.com";
+            Placement = "toolbar";
+          })
         ];
         CaptivePortal = false;
         ContentAnalysis = { Enabled = false; };
