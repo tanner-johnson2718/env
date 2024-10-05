@@ -18,24 +18,6 @@ in
       BlockAboutSupport = false;
       Bookmarks = [
         ({
-          Title = "proton-mail";
-          URL = "https://account.proton.me/mail";
-          Placement = "toolbar";
-          Folder = "proton";
-        })
-        ({
-          Title = "proton-calendar";
-          URL = "https://calendar.proton.me/u/0/";
-          Placement = "toolbar";
-          Folder = "proton";
-        })
-        ({
-          Title = "proton-pass";
-          URL = "https://pass.proton.me/u/0/";
-          Placement = "toolbar";
-          Folder = "proton";
-        })
-        ({
           Title = "rippling";
           URL = "https://app.rippling.com";
           Placement = "toolbar";
