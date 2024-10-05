@@ -7,4 +7,9 @@ in
     enable = true;
     extraCompatPackages = with pkgs; [proton-ge-bin];
   };
+
+  environment.systemPackages = lib.mkIf cfg.steam.enable 
+    (with pkgs; [
+      discord
+    ]);
 }

@@ -101,11 +101,6 @@ in
           Placement = "toolbar";
         })
         ({
-          Title = "discord";
-          URL = "https://discord.com";
-          Placement = "toolbar";
-        })
-        ({
           Title = "github";
           URL = "https://github.com";
           Placement = "toolbar";
@@ -118,11 +113,6 @@ in
         ({
           Title = "youtube";
           URL = "https://www.youtube.com";
-          Placement = "toolbar";
-        })
-        ({
-          Title = "gmail";
-          URL = "https://www.gmail.com";
           Placement = "toolbar";
         })
       ];
