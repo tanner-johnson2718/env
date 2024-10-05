@@ -24,6 +24,8 @@
       nettools
       lshw
       wireshark-cli
+      nil
+      dtc
     ];
 
     home.file = { 

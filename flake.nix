@@ -7,7 +7,7 @@
   
   outputs = {self, nixpkgs, home-manager, ...}: {
     nixosModules = {
-      common = (import ./common.nix);
+      common = (import ./common);
       home = (import ./home);
       user = (import ./user);
       asus_gu603 = (import ./hw/asus_gu603.nix);
