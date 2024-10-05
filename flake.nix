@@ -7,6 +7,7 @@
   
   outputs = {self, nixpkgs, home-manager, ...}: {
     nixosModules = {
+      script-builder = (import ./script-builder);
       common = (import ./common);
       home = (import ./home);
       user = (import ./user);
