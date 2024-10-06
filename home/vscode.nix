@@ -18,5 +18,12 @@
         "editor.detectIndentation" = false;
         "workbench.editor.showTabs" = "none";
     };
+    keybindings = [
+      ({
+        "key" = "ctrl+shift+g t";
+        "command" = "gitlens.diffWithRevisionFrom";
+        "when" = "editorTextFocus && config.gitlens.keymap == 'chorded' && gitlens:activeFileStatus =~ /tracked/";
+      })
+    ];
   };
 } 
