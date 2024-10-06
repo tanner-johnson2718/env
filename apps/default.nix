@@ -6,6 +6,7 @@ in
   imports = [
     ./firefox.nix
     ./steam.nix
+    ./proton.nix
   ];
 
   options = {
@@ -16,5 +17,6 @@ in
       default = ./bookmarks.nix;
     };
     apps.steam.enable = lib.mkEnableOption "Enable Steam";
+    apps.proton.enable = lib.mkEnableOption "Enable Proton";
   };
 }

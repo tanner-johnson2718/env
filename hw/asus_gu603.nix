@@ -113,11 +113,5 @@ in
       hostName              = lib.mkDefault cfg.hostName;
       networkmanager.enable = lib.mkDefault true;
     };
-
-    environment.systemPackages = with pkgs; [
-      yubioath-flutter
-      yubico-pam
-      yubikey-manager
-    ];
   };
 }

@@ -38,6 +38,7 @@
               apps.enable = true;
               apps.firefox.enable = true;
               apps.steam.enable = true;
+              apps.proton.enable = true;
 
               users.users.gamebox0 = {
                 isNormalUser = true;
