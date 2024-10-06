@@ -16,7 +16,7 @@
         "workbench.activityBar.location" = "top";
         "window.menuBarVisibility" = "hidden";
         "editor.detectIndentation" = false;
-        "workbench.editor.showTabs" = "none";
+        "workbench.editor.showTabs" = "single";
     };
     keybindings = [
       ({
