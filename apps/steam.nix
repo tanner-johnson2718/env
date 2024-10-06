@@ -1,6 +1,6 @@
 {lib, config, pkgs, ...} :
 let
-  cfg = config.user;
+  cfg = config.apps;
 in
 {
   programs.steam = lib.mkIf cfg.steam.enable {

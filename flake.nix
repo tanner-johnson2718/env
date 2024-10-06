@@ -10,7 +10,7 @@
       script-builder = (import ./script-builder);
       common = (import ./common);
       home = (import ./home);
-      user = (import ./user);
+      apps = (import ./apps);
       asus_gu603 = (import ./hw/asus_gu603.nix);
     };
 
@@ -22,7 +22,7 @@
 
           self.nixosModules.common
           self.nixosModules.home
-          self.nixosModules.user
+          self.nixosModules.apps
           self.nixosModules.asus_gu603
 
           ({config, ...}:{
@@ -35,9 +35,9 @@
               home.vscode.enable = true;
               home.threeD.enable = true;
 
-              user.enable = true;
-              user.firefox.enable = true;
-              user.steam.enable = true;
+              apps.enable = true;
+              apps.firefox.enable = true;
+              apps.steam.enable = true;
 
               users.users.gamebox0 = {
                 isNormalUser = true;

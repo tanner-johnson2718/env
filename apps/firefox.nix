@@ -1,11 +1,57 @@
 {lib, config, pkgs, ...}:
 let
-  cfg = config.user;
+  cfg = config.apps;
+
+  # Create an attr set with all the nix docs urls. Some will have "@X" shortcuts
+  # as a firefox search engine but not all site support this. All elements will
+  # get a bookmark.
+  nixdoc = {
+    nix-packages = {
+      name = "nix-packages";
+      url = https://search.nixos.org/packages?channel=unstable&size=50&sort=relevance&type=packages;
+    };
+    home-manager = {
+      name = "home-manager";
+      url = "https://home-manager-options.extranix.com/?release=master";
+    };
+    nix-options = {
+      name = "nix-options";
+      url = "https://search.nixos.org/options?channel=unstable&size=50&sort=relevance&type=options";
+    };
+    nix-dev = {
+      name = "nix-dev";
+      url = "https://nix.dev";
+    };
+    nix-man = {
+      name = "nix-man";
+      url = "https://nix.dev/manual/nix/development/";
+    };
+    nixpkgs-man = {
+      name = "nixpkgs-man";
+      url = "https://nixos.org/manual/nixpkgs/unstable/";
+    };
+    nixos-man = {
+      name = "nixos-man";
+      url = "https://nixos.org/manual/nixos/unstable/";
+    };
+    nixos-wiki = {
+      name = "nixos-wiki";
+      url = "https://wiki.nixos.org/wiki/NixOS_Wiki";
+    };  
+  };
+
+  # converts the above attr set to one matching the bookmark schema
+  boomarkify = {name, url} : {
+    Title = "${name}";
+    URL = "${url}";
+    Placement = "toolbar";
+    Folder = "nix";
+  };
 in
 {
-    
   programs.firefox = lib.mkIf cfg.firefox.enable {
     enable = true;
+    package = pkgs.firefox-esr;
     policies = {
       AllowFileSelectionDialogs = true;
       AppAutoUpdate = false;
@@ -16,88 +62,8 @@ in
       BlockAboutConfig = false;
       BlockAboutProfiles = false;
       BlockAboutSupport = false;
-      Bookmarks = [
-        ({
-          Title = "rippling";
-          URL = "https://app.rippling.com";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "fidelity";
-          URL = "https://nb.fidelity.com";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "nelnet";
-          URL = "https://nelnet.studentaid.gov/welcome";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "progressive";
-          URL = "https://account.apps.progressive.com";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "guardian life";
-          URL = "https://login.guardianlife.com";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "kaiser health";
-          URL = "https://kaiserpermanente.org";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "electrity";
-          URL = "https://www.sce.com/";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "wm";
-          URL = "https://www.wm.com/us/en/mywm/user/dashboard";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "cox";
-          URL = "https://www.cox.com/residential/home.html";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "turboo tax";
-          URL = "https://myturbotax.intuit.com/";
-          Placement = "toolbar";
-          Folder = "finance";
-        })
-        ({
-          Title = "chase";
-          URL = "https://secure.chase.com";
-          Placement = "toolbar";
-        })
-        ({
-          Title = "github";
-          URL = "https://github.com";
-          Placement = "toolbar";
-        })
-        ({
-          Title = "amazon-shopping";
-          URL = "https://www.amazon.com/";
-          Placement = "toolbar";
-        })
-        ({
-          Title = "youtube";
-          URL = "https://www.youtube.com";
-          Placement = "toolbar";
-        })
-      ];
+      Bookmarks = (import cfg.firefox.bookmarks)
+        ++(map boomarkify (lib.attrsets.mapAttrsToList (name: value: value) nixdoc));
       CaptivePortal = false;
       ContentAnalysis = { Enabled = false; };
       Cookies = {
@@ -130,10 +96,6 @@ in
         "*".installation_mode = "blocked";
         "uBlock0@raymondhill.net" = {
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-            installation_mode = "force_installed";
-          };
-          "78272b6fa58f4a1abaac99321d503a20@proton.me" = {
-            install_url = "https://addons.mozilla.org/firefox/downloads/latest/proton-pass/latest.xpi";
             installation_mode = "force_installed";
           };
       };
@@ -182,6 +144,36 @@ in
       };
       SearchSuggestEnabled = false;
       ShowHomeButton = false;
+      SearchEngines = {
+        Default = "DuckDuckGo"; 
+        Add = [
+          ({
+            Name = "${nixdoc.nix-packages.name}";
+            URLTemplate =  "${nixdoc.nix-packages.url}&query={searchTerms}";
+            Alias = "@np";
+          })
+          ({
+            Name = "${nixdoc.nix-options.name}";
+            URLTemplate =  "${nixdoc.nix-options.url}&query={searchTerms}";
+            Alias = "@no";
+          })
+          ({
+            Name = "${nixdoc.nix-dev.name}";
+            URLTemplate =  "${nixdoc.nix-dev.url}/search.html?q={searchTerms}";
+            Alias = "@nd";
+          })
+          ({
+            Name = "${nixdoc.home-manager.name}";
+            URLTemplate =  "${nixdoc.home-manager.url}&query={searchTerms}";
+            Alias = "@hm";
+          })
+          ({
+            Name = "${nixdoc.nixos-wiki.name}";
+            URLTemplate =  "${nixdoc.nixos-wiki.url}&query={searchTerms}";
+            Alias = "@nw";
+          })
+        ];
+      };
     };
     preferences = {
       "privacy.donottrackheader.enabled" = true;
