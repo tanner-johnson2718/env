@@ -16,8 +16,8 @@ in
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
     home-manager.users."${cfg.userName}" = (import ./home.nix){ 
-      userName = "${cfg.userName}";
-      modules = []
+    userName = "${cfg.userName}";
+    modules = []
         ++ (if cfg.term.enable then [./term.nix] else [])
         ++ (if cfg.kitty.enable then [./kitty.nix] else [])
         ++ (if cfg.vscode.enable then [./vscode.nix] else []);
