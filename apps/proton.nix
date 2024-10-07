@@ -8,4 +8,12 @@
     yubico-pam
     yubikey-manager
   ];
+
+  security.pam.yubico = {
+      enable = true;
+      debug = true;
+      mode = "challenge-response";
+      id = [ "29490434" ];
+      control = "sufficient";
+    };
 }

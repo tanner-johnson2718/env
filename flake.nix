@@ -31,7 +31,6 @@
               home.enable = true;
               home.userName = "gamebox0";
               home.term.enable = true;
-              home.kitty.enable = true;
               home.vscode.enable = true;
               home.threeD.enable = true;
 

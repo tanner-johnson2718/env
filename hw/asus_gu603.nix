@@ -33,13 +33,6 @@ in
     nixpkgs.hostPlatform = "x86_64-linux";
 
     security.rtkit.enable = true;
-    security.pam.yubico = {
-      enable = true;
-      debug = true;
-      mode = "challenge-response";
-      id = [ "29490434" ];
-      control = "sufficient";
-    };
 
     services = {
       xserver = { 
