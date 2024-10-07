@@ -1,13 +1,13 @@
 [
   ({
-    Title = "rippling";
-    URL = "https://app.rippling.com";
+    Title = "fidelity";
+    URL = "https://nb.fidelity.com";
     Placement = "toolbar";
     Folder = "finance";
   })
   ({
-    Title = "fidelity";
-    URL = "https://nb.fidelity.com";
+    Title = "rippling";
+    URL = "https://app.rippling.com";
     Placement = "toolbar";
     Folder = "finance";
   })
@@ -70,13 +70,13 @@
     Placement = "toolbar";
   })
   ({
-    Title = "amazon-shopping";
+    Title = "amazon";
     URL = "https://www.amazon.com/";
     Placement = "toolbar";
   })
   ({
     Title = "youtube";
-    URL = "https://www.youtube.com";
+    URL = "https://www.youtube.com/";
     Placement = "toolbar";
   })
 ]
