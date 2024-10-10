@@ -7,10 +7,10 @@
   
   outputs = {self, nixpkgs, home-manager, ...}: {
     nixosModules = {
-      script-builder = (import ./script-builder);
       common = (import ./common);
-      home = (import ./home);
-      apps = (import ./apps);
+      term = (import ./term);
+      firefox = (import ./firefox);
+      steam = (import ./steam);
       asus_gu603 = (import ./hw/asus_gu603.nix);
     };
 
@@ -21,23 +21,20 @@
           home-manager.nixosModules.home-manager
 
           self.nixosModules.common
-          self.nixosModules.home
-          self.nixosModules.apps
+          self.nixosModules.term
+          self.nixosModules.firefox
+          self.nixosModules.steam
           self.nixosModules.asus_gu603
 
           ({config, ...}:{
             config = {
               asus_gu603.hostName = "gamebox0";
-              home.enable = true;
-              home.userName = "gamebox0";
-              home.term.enable = true;
-              home.vscode.enable = true;
-              home.threeD.enable = true;
-
-              apps.enable = true;
-              apps.firefox.enable = true;
-              apps.steam.enable = true;
-              apps.proton.enable = true;
+              term.enable = true;
+              term.userName = "gamebox0";
+              term.term.enable = true;
+              term.vscode.enable = true;
+              firefox.enable = true;
+              steam.enable = true;   # has prusa slicer too
 
               users.users.gamebox0 = {
                 isNormalUser = true;
