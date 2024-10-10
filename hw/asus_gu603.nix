@@ -106,5 +106,13 @@ in
       hostName              = lib.mkDefault cfg.hostName;
       networkmanager.enable = lib.mkDefault true;
     };
+
+     security.pam.yubico = {
+      enable = true;
+      debug = true;
+      mode = "challenge-response";
+      id = [ "29490434" ];
+      control = "sufficient";
+    };
   };
 }
